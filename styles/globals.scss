@@ -1,0 +1,54 @@
+@use "text" as *;
+@use "colors" as *;
+@use "button" as *;
+@use "textinput" as *;
+@use "checkbox" as *;
+
+* {
+    padding: 0px;
+    margin: 0px;
+    color: $black;
+}
+
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $light-pink;
+    width: 100%;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100dvh;
+    background-color: $white;
+}
+
+main {
+    padding: 20px;
+}
+
+label {
+    font-weight: 600;
+    font-size: 1em;
+}
+
+.margin-right-5 {
+    margin-right: 5px;
+}
+
+.margin-bottom-5 {
+    margin-bottom: 5px;
+}
+
+.subheader {
+    font-size: 0.625em;
+    font-style: italic;
+}
+
+.right {
+    display: flex;
+    justify-content: right;
+}

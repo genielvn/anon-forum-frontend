@@ -1,0 +1,22 @@
+@use "../../styles/colors" as *;
+
+.thread {
+    background-color: $light-pink;
+    padding: 10px;
+    margin: 5px 0px;
+}
+
+.thread__title {
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.thread__details {
+    font-size: 0.75em;
+    font-style: italic;
+    padding-bottom: 10px;
+}
+
+.thread__text {
+    font-size: 1em;
+}

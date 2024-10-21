@@ -1,0 +1,14 @@
+@use "../../styles/colors" as *;
+
+.reply {
+    border-top: 1px $black solid;
+    padding: 8px 0;
+}
+
+.reply__details {
+    font-size: 0.75em;
+}
+
+.reply__details_author {
+    font-weight: 600;
+}

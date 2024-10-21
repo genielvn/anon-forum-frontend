@@ -1,0 +1,19 @@
+@use "../../styles/colors" as *;
+
+.menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.menu__list {
+    font-weight: 600;
+    text-decoration: none;
+    color: $black;
+}
+
+.account {
+    color: $black;
+    font-size: 1.75em;
+}
