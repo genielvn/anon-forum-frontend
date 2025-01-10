@@ -3,6 +3,8 @@
 import { notFound } from "next/navigation";
 import Thread from "@/components/Thread";
 import ThreadCreate from "@/components/ThreadCreate";
+import useFetch from "@/hooks/useFetch";
+
 interface ThreadListProps {
     params: {
         board_id: string;
@@ -10,67 +12,59 @@ interface ThreadListProps {
 }
 
 interface ThreadData {
+    id: number;
     title: string;
     author: string;
-    replyCount: number;
-    text: string;
+    reply_count: number;
+    body: string;
+    updated_at: string;
 }
 
-const sampleThreads: Record<string, ThreadData> = {
-    1: {
-        title: "Nakita niyo ba yung pencil ko?",
-        author: "Kim",
-        replyCount: 5,
-        text: "Weird lang, kasi nung nag-eexam ako, ginagamit ko yung pencil ko for shading. Nagbura lang ako ng sagot ko, pagtingin ko, wala na! Pahanap naman ng pencil ko guys, need na need ko yun.",
-    },
-    2: {
-        title: "sir xxxxx issue",
-        author: "Kim",
-        replyCount: 121,
-        text: "SIR *****, MAGALING KA SANA MAGTURO, KASO LAGI KANG NAGAGALIT AYUSIN MO NAMAN. KAYA AYAW NAMIN SUMAGOT KASI PARANG INAAWAY NIYO KAMING MGA ESTUDYANTE",
-    },
-};
+interface BoardData {
+    board_id: string;
+    name: string;
+    description: string;
+}
 
-const validIDs: string[] = ["pup", "up"];
-const sampleBoards: Record<string, { name: string; motto: string }> = {
-    pup: {
-        name: "Polytechnic University of The Philippines",
-        motto: "Tanglaw ng Bayan",
-    },
-    up: {
-        name: "University of The Philippines",
-        motto: "Honor, Excellence, Service",
-    },
-};
+interface Data {
+    board: BoardData;
+    threads: ThreadData[];
+}
 
 export default function ThreadList({ params }: ThreadListProps) {
-    const board_id = params.board_id;
+    const { board_id } = params;
 
-    if (!validIDs.includes(board_id)) return notFound();
+    const { data, error, isLoading } = useFetch<Data>(
+        `http://127.0.0.1:8000/${board_id}/`
+    );
 
-    const board = sampleBoards[board_id];
+    if (isLoading) {
+        return;
+    }
+
+    if (error === "404") {
+        return notFound();
+    }
 
     return (
         <>
-            <h2>{board.name}</h2>
-            <p>{board.motto}</p>
+            <h2>{data?.board.name}</h2>
+            <p>{data?.board.description}</p>
 
             <div>
                 <ThreadCreate board={board_id} />
-                {Object.keys(sampleThreads).map((threadId) => {
-                    const thread = sampleThreads[threadId];
-                    return (
-                        <Thread
-                            key={threadId}
-                            id={parseInt(threadId)}
-                            board={board_id}
-                            title={thread.title}
-                            text={thread.text}
-                            author={thread.author}
-                            replyCount={thread.replyCount}
-                        />
-                    );
-                })}
+                {data?.threads.map((thread) => (
+                    <Thread
+                        key={thread.id}
+                        id={thread.id}
+                        board={board_id}
+                        title={thread.title}
+                        text={thread.body}
+                        author={thread.author}
+                        replyCount={thread.reply_count}
+                        updated_at={thread.updated_at}
+                    />
+                ))}
             </div>
         </>
     );

@@ -1,52 +1,132 @@
+"use client";
+
 import { notFound } from "next/navigation";
 import style from "./page.module.scss";
 import RepliesInput from "@/components/RepliesInput";
+import Reply from "@/components/Reply";
+import useFetch from "@/hooks/useFetch";
+import { useState } from "react";
+import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
+import Image from "next/image";
+
 interface ThreadProps {
     params: {
-        thread_id: string;
+        board_id: string;
+        thread_id: number;
     };
 }
 
-const sampleThreads: Record<
-    number,
-    { title: string; content: string; author: string; minutesAgo: number }
-> = {
-    1: {
-        title: "Nakita niyo ba yung pencil ko?",
-        content:
-            "Weird lang, kasi nung nag-eexam ako, ginagamit ko yung pencil ko for shading. Nagbura lang ako ng sagot ko, pagtingin ko, wala na! Pahanap naman ng pencil ko guys, need na need ko yun.",
-        author: "Kim",
-        minutesAgo: 20,
-    },
-};
+interface ThreadData {
+    id: number;
+    title: string;
+    author: string;
+    reply_count: number;
+    body: string;
+    updated_at: string;
+    img_upload: string | null;
+}
 
-const sampleComments: Record<number, { author: string; content: string }> = {
-    1: {
-        author: "Anonymous",
-        content: "pen mo bulok",
-    },
-};
+interface BoardData {
+    board_id: string;
+    name: string;
+    description: string;
+}
+
+interface RepliesData {
+    id: number;
+    body: string;
+    created_at: string;
+    img_upload: string | null;
+}
+
+interface Data {
+    board: BoardData;
+    thread: ThreadData;
+}
 
 export default function Thread({ params }: ThreadProps) {
-    const thread_id = Number(params.thread_id);
+    const { board_id, thread_id } = params;
 
-    if (isNaN(thread_id)) return notFound();
-    if (!Object.keys(sampleThreads).includes(String(thread_id)))
+    const { data, error, isLoading } = useFetch<Data>(
+        `http://127.0.0.1:8000/${board_id}/${thread_id}/`
+    );
+
+    const [replies, setReplies] = useState<RepliesData[] | null>(null);
+
+    // Fetch replies data
+    const fetchReplies = async () => {
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:8000/${board_id}/${thread_id}/replies/`
+            );
+            if (response.ok) {
+                const jsonData: RepliesData[] = await response.json();
+                setReplies(jsonData);
+            }
+        } catch (err) {
+            console.error("Failed to fetch replies:", err);
+        }
+    };
+
+    // Initial fetch of replies
+    if (!replies && !isLoading) {
+        fetchReplies();
+    }
+
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+
+    if (error === "404") {
         return notFound();
+    }
 
-    const thread = sampleThreads[thread_id];
+    const relativeTime = data?.thread.updated_at
+        ? formatDistanceToNow(new Date(data.thread.updated_at as string), {
+              addSuffix: true,
+          })
+        : "";
 
     return (
         <>
-            <div className="subheader">
-                /pup/ - Polytechnic University of The Philippines
-            </div>
-            <h3>{thread.title}</h3>
+            <Link className="subheader" href={`/${data?.board.board_id}`}>
+                /{data?.board.board_id}/ - {data?.board.name}
+            </Link>
+            <h3>{data?.thread.title}</h3>
             <div className={style.thread__details}>
-                by {thread.author} • {thread.minutesAgo} minutes ago
+                by {data?.thread.author} • posted {relativeTime}
             </div>
-            <div className={style.thread__text}>{thread.content}</div>
-            <RepliesInput />
+            <div className={style.thread__text}>{data?.thread.body}</div>
+            {data?.thread.img_upload && (
+                <div className={style.thread__image}>
+                    <Image
+                        src={`http://127.0.0.1:8000${data.thread.img_upload}`}
+                        alt="Thread Image"
+                        layout="responsive"
+                        width={400}
+                        height={400}
+                    />
+                </div>
+            )}
+            <RepliesInput
+                board_id={board_id}
+                thread_id={thread_id}
+                onReplyPosted={fetchReplies} // Pass the refetch function
+            />
+            <h3>Replies</h3>
+            {replies?.length === 0
+                ? "No replies yet"
+                : replies?.map((reply, index) => (
+                      <Reply
+                          key={reply.id}
+                          id={index + 1}
+                          author="Anonymous"
+                          content={reply.body}
+                          created_at={reply.created_at}
+                          img_upload={reply.img_upload}
+                      />
+                  ))}
         </>
     );
 }

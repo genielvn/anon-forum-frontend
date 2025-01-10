@@ -9,16 +9,11 @@ const Navigation = () => {
             <Image src={Logo} alt="logo" width={40}></Image>
             <div className={style.menu}>
                 <Link href={"/"} className={style.menu__list}>
-                    Feed
-                </Link>
-                <Link href={"/boards"} className={style.menu__list}>
                     Boards
                 </Link>
             </div>
             <Link href={"/user"}>
-                <i
-                    className={`bi bi-person-circle ${style.account}`}
-                ></i>
+                <i className={`bi bi-person-circle ${style.account}`}></i>
             </Link>
         </nav>
     );

@@ -17,8 +17,13 @@ nav {
     align-items: center;
     background-color: $light-pink;
     width: 100%;
-    padding: 10px 20px;
     box-sizing: border-box;
+    @media (width <= 768px) {
+        padding: 10px 20px;
+    }
+    @media (width > 768px) {
+        padding: 10px calc(20% + 20px);
+    }
 }
 
 body {
@@ -27,12 +32,23 @@ body {
 }
 
 main {
-    padding: 20px;
+    @media (width <= 768px) {
+        padding: 20px;
+    }
+    @media (width > 768px) {
+        padding: 20px;
+        margin-left: 20%;
+        margin-right: 20%;
+    }
 }
 
 label {
     font-weight: 600;
     font-size: 1em;
+}
+
+.margin-left-5 {
+    margin-left: 10px;
 }
 
 .margin-right-5 {
@@ -51,4 +67,5 @@ label {
 .right {
     display: flex;
     justify-content: right;
+    align-items: center;
 }
