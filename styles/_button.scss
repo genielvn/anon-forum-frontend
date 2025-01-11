@@ -55,3 +55,9 @@ button.btn-solid-pink {
     outline: 2px $pink solid;
     background-color: $pink;
 }
+
+button.btn-hollow-pink {
+    outline: 2px $pink solid;
+    background-color: none;
+    color: $pink;
+}

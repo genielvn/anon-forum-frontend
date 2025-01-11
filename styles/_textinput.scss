@@ -1,6 +1,7 @@
 @use "colors" as *;
 
 input[type="text"],
+input[type="password"],
 textarea {
     border: 2px $pink solid;
     font-size: 1em;

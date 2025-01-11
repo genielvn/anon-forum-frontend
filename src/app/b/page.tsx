@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Board from "@/components/Board";
 import useFetch from "@/hooks/useFetch";
+import { notFound } from "next/navigation";
 
 interface BoardData {
     board_id: string;
@@ -14,6 +15,8 @@ export default function Boards() {
     const { data, error, isLoading } = useFetch<BoardData[]>(
         "http://127.0.0.1:8000/"
     );
+
+    if (error) return notFound();
 
     return (
         <>

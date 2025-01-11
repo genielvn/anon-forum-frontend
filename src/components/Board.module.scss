@@ -1,7 +1,7 @@
 @use "../../styles/colors" as *;
 
 .board {
-    background-color: #ffb8de;
+    background-color: $light-pink;
     outline: 2px $pink solid;
     border-radius: 15px;
     padding: 16px 20px;
@@ -13,7 +13,7 @@
     font-weight: 600;
 }
 
-.board__motto {
-    font-size: 0.875em;
+.board__description {
+    font-size: 1em;
     font-style: italic;
 }

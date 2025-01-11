@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Thread from "@/components/Thread";
 import ThreadCreate from "@/components/ThreadCreate";
 import useFetch from "@/hooks/useFetch";
+import style from "./page.module.scss";
 
 interface ThreadListProps {
     params: {
@@ -18,6 +19,7 @@ interface ThreadData {
     reply_count: number;
     body: string;
     updated_at: string;
+    img_upload: string | null;
 }
 
 interface BoardData {
@@ -42,16 +44,17 @@ export default function ThreadList({ params }: ThreadListProps) {
         return;
     }
 
-    if (error === "404") {
+    if (error) {
         return notFound();
     }
 
     return (
         <>
             <h2>{data?.board.name}</h2>
-            <p>{data?.board.description}</p>
-
-            <div>
+            <p className={style.thread__board_description}>
+                {data?.board.description}
+            </p>
+            <div className={style.thread__list}>
                 <ThreadCreate board={board_id} />
                 {data?.threads.map((thread) => (
                     <Thread
@@ -63,6 +66,7 @@ export default function ThreadList({ params }: ThreadListProps) {
                         author={thread.author}
                         replyCount={thread.reply_count}
                         updated_at={thread.updated_at}
+                        img_upload={thread.img_upload}
                     />
                 ))}
             </div>

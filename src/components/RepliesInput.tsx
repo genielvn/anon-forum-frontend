@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import style from "./RepliesInput.module.scss";
-import Checkbox from "./Checkbox";
+// import Checkbox from "./Checkbox";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -77,7 +77,6 @@ const RepliesInput: React.FC<ReplyInputProps> = ({
     return (
         <form onSubmit={handleSubmit}>
             <div className={style.new_replies__input_divider}>
-                <label htmlFor="replies-new-text">Replies</label>
                 <textarea
                     id="replies-new-text"
                     onChange={(e) => setReply(e.target.value)}
@@ -101,9 +100,9 @@ const RepliesInput: React.FC<ReplyInputProps> = ({
                     {message && <p>{message}</p>}
                 </div>
             </div>
-            <div className={`${style.new_replies__input_divider}`}>
+            {/* <div className={`${style.new_replies__input_divider}`}>
                 <Checkbox id="reply-anon" text="Reply as Anonymous"></Checkbox>
-            </div>
+            </div> */}
         </form>
     );
 };

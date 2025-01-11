@@ -9,6 +9,7 @@ import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 
 interface ThreadProps {
     params: {
@@ -23,7 +24,7 @@ interface ThreadData {
     author: string;
     reply_count: number;
     body: string;
-    updated_at: string;
+    created_at: string;
     img_upload: string | null;
 }
 
@@ -75,29 +76,30 @@ export default function Thread({ params }: ThreadProps) {
     }
 
     if (isLoading) {
-        return <p>Loading...</p>;
+        return;
     }
 
-    if (error === "404") {
+    if (error) {
         return notFound();
     }
 
-    const relativeTime = data?.thread.updated_at
-        ? formatDistanceToNow(new Date(data.thread.updated_at as string), {
-              addSuffix: true,
-          })
-        : "";
-
+    const relativeTime =
+        data?.thread.created_at &&
+        formatDistanceToNow(new Date(data.thread.created_at as string), {
+            addSuffix: true,
+        });
     return (
         <>
             <Link className="subheader" href={`/${data?.board.board_id}`}>
                 /{data?.board.board_id}/ - {data?.board.name}
             </Link>
-            <h3>{data?.thread.title}</h3>
+            <h2>{data?.thread.title}</h2>
             <div className={style.thread__details}>
                 by {data?.thread.author} • posted {relativeTime}
             </div>
-            <div className={style.thread__text}>{data?.thread.body}</div>
+            <div className={style.thread__text}>
+                <ReactMarkdown>{data?.thread.body || ""}</ReactMarkdown>
+            </div>
             {data?.thread.img_upload && (
                 <div className={style.thread__image}>
                     <Image
