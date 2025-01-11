@@ -16,9 +16,13 @@ const quote404 = [
 
 export default function Custom404() {
     const router = useRouter();
+    const token = localStorage.getItem("token"); // Or cookies, depending on storage method
 
-    const goToFeed = () => {
-        router.push("/");
+    const goToBoards = () => {
+        router.push("/b");
+    };
+    const joinTheFun = () => {
+        router.push("/a");
     };
 
     return (
@@ -36,9 +40,9 @@ export default function Custom404() {
             <div className={style.notFound__button_div}>
                 <button
                     className="btn-full-width btn-solid-pink"
-                    onClick={goToFeed}
+                    onClick={token ? goToBoards : joinTheFun}
                 >
-                    Go to Feed
+                    {token ? "Go to Boards" : "Join the fun!"}
                 </button>
             </div>
         </div>

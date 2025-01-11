@@ -1,19 +1,16 @@
 import React, { useRef } from "react";
 import style from "./RepliesInput.module.scss";
-// import Checkbox from "./Checkbox";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface ReplyInputProps {
     board_id: string;
     thread_id: number;
-    onReplyPosted: () => void;
 }
 
 const RepliesInput: React.FC<ReplyInputProps> = ({
     board_id,
     thread_id,
-    onReplyPosted,
 }) => {
     const [reply, setReply] = useState("");
     const [replyImage, setReplyImage] = useState<File | null>(null);
@@ -28,8 +25,8 @@ const RepliesInput: React.FC<ReplyInputProps> = ({
         setIsSubmitting(true);
         setMessage("");
 
-        if (!reply && !replyImage) {
-            setMessage("Please post an image or a body.");
+        if (!reply || !replyImage) {
+            setMessage("Please include a text to your reply.");
             setIsSubmitting(false);
             return;
         }
@@ -38,12 +35,24 @@ const RepliesInput: React.FC<ReplyInputProps> = ({
         formData.append("body", reply);
         if (replyImage) formData.append("img_upload", replyImage);
 
+        // Retrieve the JWT token from localStorage (or sessionStorage, depending on where it's stored)
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            setMessage("You need to be logged in to post a reply.");
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
             const response = await fetch(
-                `http://127.0.0.1:8000/${board_id}/${thread_id}/reply/`,
+                `http://127.0.0.1:8000/b/${board_id}/${thread_id}/reply/`,
                 {
                     method: "POST",
                     body: formData,
+                    headers: {
+                        "Authorization": `Bearer ${token}`,  // Include the token in the Authorization header
+                    },
                 }
             );
 
@@ -51,10 +60,11 @@ const RepliesInput: React.FC<ReplyInputProps> = ({
                 setReply(""); // Clear the reply text area
                 setReplyImage(null); // Clear the image selection
                 if (imageInput.current) imageInput.current.value = ""; // Reset file input
-                onReplyPosted(); // Trigger the callback
                 setMessage("Reply successfully posted!");
+                window.location.reload()
             } else {
                 const errorData = await response.json();
+                console.log(errorData)
                 setMessage(errorData?.error || "Failed to post reply.");
             }
         } catch (err) {
@@ -63,7 +73,6 @@ const RepliesInput: React.FC<ReplyInputProps> = ({
             );
         } finally {
             setIsSubmitting(false);
-            router.refresh(); // Refresh the page
         }
     };
 
@@ -100,9 +109,6 @@ const RepliesInput: React.FC<ReplyInputProps> = ({
                     {message && <p>{message}</p>}
                 </div>
             </div>
-            {/* <div className={`${style.new_replies__input_divider}`}>
-                <Checkbox id="reply-anon" text="Reply as Anonymous"></Checkbox>
-            </div> */}
         </form>
     );
 };

@@ -8,7 +8,7 @@ const Navigation = () => {
         <nav>
             <Image src={Logo} alt="logo" width={40}></Image>
             <div className={style.menu}>
-                <Link href={"/"} className={style.menu__list}>
+                <Link href={"/b/"} className={style.menu__list}>
                     Boards
                 </Link>
             </div>

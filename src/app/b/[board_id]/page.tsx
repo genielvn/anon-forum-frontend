@@ -37,7 +37,7 @@ export default function ThreadList({ params }: ThreadListProps) {
     const { board_id } = params;
 
     const { data, error, isLoading } = useFetch<Data>(
-        `http://127.0.0.1:8000/${board_id}/`
+        `http://127.0.0.1:8000/b/${board_id}/`
     );
 
     if (isLoading) {

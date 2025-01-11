@@ -3,18 +3,25 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import style from "./page.module.scss";
 
-export default function AccountSignIn() {
+export default function AccountSignUp() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
 
     const handleSignInSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        setErrorMessage(""); // Clear any previous errors
+        setErrorMessage("");
+
+        if (password != confirmPassword) {
+            setErrorMessage("Password does not match.");
+            return;
+        }
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/login/", {
+            const response = await fetch("http://127.0.0.1:8000/auth/signup/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -22,16 +29,14 @@ export default function AccountSignIn() {
                 body: JSON.stringify({
                     username,
                     password,
+                    email,
                 }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                // Store the JWT token in localStorage or cookies
                 localStorage.setItem("token", data.token);
-
-                // Redirect to the boards list or homepage
-                router.push("/");
+                router.push("/b");
             } else {
                 const errorData = await response.json();
                 setErrorMessage(errorData.error || "Invalid credentials.");
@@ -43,7 +48,7 @@ export default function AccountSignIn() {
 
     return (
         <>
-            <h1> Welcome back! </h1>
+            <h1> Welcome!</h1>
             <form onSubmit={handleSignInSubmit}>
                 <div className={style.account__input_divider}>
                     <label htmlFor="username">Username</label>
@@ -65,18 +70,43 @@ export default function AccountSignIn() {
                         required
                     />
                 </div>
+                <div className={style.account__input_divider}>
+                    <label htmlFor="confirm-password">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirm-password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className={style.account__input_divider}>
+                    <label htmlFor="email">School Email</label>
+                    <input
+                        type="text"
+                        id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
                 {errorMessage && (
-                    <p className={style.error_message}>{errorMessage}</p>
+                    <p className={style.account__input_divider}>
+                        {errorMessage}
+                    </p>
                 )}
                 <div className={style.account__input_buttons}>
                     <button
                         type="button"
                         className="btn-full-width btn-hollow-pink margin-bottom-20"
-                        onClick={() => router.push("/account/sign-up")}
+                        onClick={() => router.push("/a/sign-in")}
                     >
-                        {"Don't have an account?"}
+                        {"Already have an account?"}
                     </button>
-                    <button type="submit" className="btn-full-width btn-solid-pink">
+                    <button
+                        type="submit"
+                        className="btn-full-width btn-solid-pink"
+                    >
                         Sign In
                     </button>
                 </div>

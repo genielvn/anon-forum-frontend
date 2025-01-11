@@ -5,7 +5,6 @@ import style from "./page.module.scss";
 import RepliesInput from "@/components/RepliesInput";
 import Reply from "@/components/Reply";
 import useFetch from "@/hooks/useFetch";
-import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 import Image from "next/image";
@@ -39,6 +38,7 @@ interface RepliesData {
     body: string;
     created_at: string;
     img_upload: string | null;
+    author: string;
 }
 
 interface Data {
@@ -50,30 +50,11 @@ export default function Thread({ params }: ThreadProps) {
     const { board_id, thread_id } = params;
 
     const { data, error, isLoading } = useFetch<Data>(
-        `http://127.0.0.1:8000/${board_id}/${thread_id}/`
+        `http://127.0.0.1:8000/b/${board_id}/${thread_id}/`
     );
-
-    const [replies, setReplies] = useState<RepliesData[] | null>(null);
-
-    // Fetch replies data
-    const fetchReplies = async () => {
-        try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/${board_id}/${thread_id}/replies/`
-            );
-            if (response.ok) {
-                const jsonData: RepliesData[] = await response.json();
-                setReplies(jsonData);
-            }
-        } catch (err) {
-            console.error("Failed to fetch replies:", err);
-        }
-    };
-
-    // Initial fetch of replies
-    if (!replies && !isLoading) {
-        fetchReplies();
-    }
+    const { data: replies, error: repliesError } = useFetch<RepliesData[]>(
+        `http://127.0.0.1:8000/b/${board_id}/${thread_id}/replies/`
+    );
 
     if (isLoading) {
         return;
@@ -90,7 +71,7 @@ export default function Thread({ params }: ThreadProps) {
         });
     return (
         <>
-            <Link className="subheader" href={`/${data?.board.board_id}`}>
+            <Link className="subheader" href={`/b/${data?.board.board_id}`}>
                 /{data?.board.board_id}/ - {data?.board.name}
             </Link>
             <h2>{data?.thread.title}</h2>
@@ -111,11 +92,7 @@ export default function Thread({ params }: ThreadProps) {
                     />
                 </div>
             )}
-            <RepliesInput
-                board_id={board_id}
-                thread_id={thread_id}
-                onReplyPosted={fetchReplies} // Pass the refetch function
-            />
+            <RepliesInput board_id={board_id} thread_id={thread_id} />
             <h3>Replies</h3>
             {replies?.length === 0
                 ? "No replies yet"
@@ -123,7 +100,7 @@ export default function Thread({ params }: ThreadProps) {
                       <Reply
                           key={reply.id}
                           id={index + 1}
-                          author="Anonymous"
+                          author={reply.author}
                           content={reply.body}
                           created_at={reply.created_at}
                           img_upload={reply.img_upload}

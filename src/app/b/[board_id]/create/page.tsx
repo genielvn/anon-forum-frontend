@@ -23,7 +23,7 @@ interface BoardData {
 export default function CreateThread({ params }: CreateThreadProps) {
     const { board_id } = params;
     const { data, error, isLoading } = useFetch<BoardData>(
-        `http://127.0.0.1:8000/${board_id}/`
+        `http://127.0.0.1:8000/b/${board_id}/`
     );
 
     const [title, setTitle] = useState("");
@@ -32,8 +32,12 @@ export default function CreateThread({ params }: CreateThreadProps) {
     const [imagePreview, setImagePreview] = useState<string | null>(null); // For image preview
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
-
+    const token = localStorage.getItem("token");
     const router = useRouter();
+
+    if (!token) {
+        return notFound();
+    }
 
     if (isLoading) return <p>Loading...</p>;
     if (error === "404") return notFound();
@@ -68,35 +72,40 @@ export default function CreateThread({ params }: CreateThreadProps) {
         formData.append("body", body);
         if (image) formData.append("img_upload", image);
 
+        // Retrieve the JWT token from localStorage
+
         try {
             const response = await fetch(
-                `http://127.0.0.1:8000/${board_id}/create/`,
+                `http://127.0.0.1:8000/b/${board_id}/create/`,
                 {
                     method: "POST",
                     body: formData,
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Add the token here
+                    },
                 }
             );
 
             if (response.ok) {
                 const json = await response.json();
                 const thread_id = json.id;
-                router.push(`/${board_id}/${thread_id}`);
+                router.push(`/b/${board_id}/${thread_id}`);
             } else {
                 const errorData = await response.json();
+                console.log(errorData);
                 throw new Error(errorData?.error);
             }
         } catch (err) {
             setMessage(
                 "Something went wrong. Please try again. Error message: " + err
             );
-        } finally {
-            setMessage("Thread successfully posted!");
+            setIsSubmitting(false);
         }
     };
 
     return (
         <>
-            <Link className="subheader" href={`/${data?.board.board_id}`}>
+            <Link className="subheader" href={`/b/${data?.board.board_id}`}>
                 /{data?.board.board_id}/ - {data?.board.name}
             </Link>
             <h2>Start a New Thread</h2>

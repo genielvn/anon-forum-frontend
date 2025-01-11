@@ -3,11 +3,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import style from "./page.module.scss";
 
-export default function AccountSignUp() {
+export default function AccountSignIn() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
 
@@ -16,7 +14,7 @@ export default function AccountSignUp() {
         setErrorMessage(""); // Clear any previous errors
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/signup/", {
+            const response = await fetch("http://127.0.0.1:8000/auth/login/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -33,7 +31,7 @@ export default function AccountSignUp() {
                 localStorage.setItem("token", data.token);
 
                 // Redirect to the boards list or homepage
-                router.push("/");
+                router.push("/b");
             } else {
                 const errorData = await response.json();
                 setErrorMessage(errorData.error || "Invalid credentials.");
@@ -45,7 +43,7 @@ export default function AccountSignUp() {
 
     return (
         <>
-            <h1> Welcome!</h1>
+            <h1> Welcome back! </h1>
             <form onSubmit={handleSignInSubmit}>
                 <div className={style.account__input_divider}>
                     <label htmlFor="username">Username</label>
@@ -67,26 +65,6 @@ export default function AccountSignUp() {
                         required
                     />
                 </div>
-                <div className={style.account__input_divider}>
-                    <label htmlFor="confirm-password">Confirm Password</label>
-                    <input
-                        type="password"
-                        id="confirm-password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className={style.account__input_divider}>
-                    <label htmlFor="email">School Email</label>
-                    <input
-                        type="text"
-                        id="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
                 {errorMessage && (
                     <p className={style.error_message}>{errorMessage}</p>
                 )}
@@ -94,14 +72,11 @@ export default function AccountSignUp() {
                     <button
                         type="button"
                         className="btn-full-width btn-hollow-pink margin-bottom-20"
-                        onClick={() => router.push("/account/sign-in")}
+                        onClick={() => router.push("/a/sign-up")}
                     >
-                        {"Already have an account?"}
+                        {"Don't have an account?"}
                     </button>
-                    <button
-                        type="submit"
-                        className="btn-full-width btn-solid-pink"
-                    >
+                    <button type="submit" className="btn-full-width btn-solid-pink">
                         Sign In
                     </button>
                 </div>

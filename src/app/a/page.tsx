@@ -22,13 +22,13 @@ export default function Account() {
             <div className={style.account__second_half}>
                 <button
                     className="btn-full-width btn-hollow-pink margin-bottom-20"
-                    onClick={() => router.push("/account/sign-in")}
+                    onClick={() => router.push("/a/sign-in")}
                 >
                     Sign In
                 </button>
                 <button
                     className="btn-full-width btn-solid-pink"
-                    onClick={() => router.push("/account/sign-up")}
+                    onClick={() => router.push("/a/sign-up")}
                 >
                     Sign Up
                 </button>

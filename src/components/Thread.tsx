@@ -33,7 +33,7 @@ const Thread: React.FC<ThreadProps> = ({
     const limitedText = text.length > 200 ? `${text.slice(0, 200)}...` : text;
 
     return (
-        <Link href={`/${board}/${id}`} style={{ textDecoration: "none" }}>
+        <Link href={`/b/${board}/${id}`} style={{ textDecoration: "none" }}>
             <div className={style.thread}>
                 <div className={style.thread__title}>{title}</div>
                 <div className={style.thread__details}>

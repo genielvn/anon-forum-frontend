@@ -9,24 +9,31 @@ interface Result<T> {
 function useFetch<T>(url: string): Result<T> {
     const [data, setData] = useState<T | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [isLoading, setisLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(url);
-                if (response.status === 404) {
-                    throw new Error("404");
+                const token = localStorage.getItem("token"); // Assuming token is saved in localStorage
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch");
                 }
-                const received = await response.json();
-                setData(received);
+                const result: T = await response.json();
+                setData(result);
             } catch (err) {
-                console.error(`Error fetching ${url}: ${err}`);
                 setError((err as Error).message);
             } finally {
-                setisLoading(false);
+                setIsLoading(false);
             }
         };
+
         fetchData();
     }, [url]);
 

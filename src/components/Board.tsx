@@ -9,7 +9,7 @@ interface BoardProps {
 
 const Board: React.FC<BoardProps> = ({ id, name, description }) => {
     return (
-        <Link href={id} style={{ textDecoration: "none" }}>
+        <Link href={`b/${id}`} style={{ textDecoration: "none" }}>
             <div className={style.board}>
                 <div className={style.board__name}>{name}</div>
                 <div className={style.board__description}>{description}</div>

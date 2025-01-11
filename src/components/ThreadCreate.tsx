@@ -8,7 +8,7 @@ interface ThreadProps {
 
 const ThreadCreate: React.FC<ThreadProps> = ({ board }) => {
     return (
-        <Link href={`/${board}/create`} style={{ textDecoration: "none" }}>
+        <Link href={`/b/${board}/create`} style={{ textDecoration: "none" }}>
             <div className={style.thread}>
                 <div className={style.thread__title}>
                     <i className="bi bi-plus-circle-fill margin-right-5" />
