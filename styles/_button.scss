@@ -21,9 +21,22 @@ button.btn-small {
     min-width: 80px;
 }
 
+button.btn-large-no-min {
+    padding: 15px 24px;
+}
+
+button.btn-small-no-min {
+    padding: 8px 15px;
+}
+
 button.btn-full-width {
     padding: 15px 24px;
     min-width: 100%;
+}
+
+button.btn-half {
+    padding: 15px 24px;
+    min-width: 50%;
 }
 
 button.btn-pink {

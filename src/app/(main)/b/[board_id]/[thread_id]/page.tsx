@@ -52,7 +52,7 @@ export default function Thread({ params }: ThreadProps) {
     const { data, error, isLoading } = useFetch<Data>(
         `http://127.0.0.1:8000/b/${board_id}/${thread_id}/`
     );
-    const { data: replies, error: repliesError } = useFetch<RepliesData[]>(
+    const { data: replies} = useFetch<RepliesData[]>(
         `http://127.0.0.1:8000/b/${board_id}/${thread_id}/replies/`
     );
 

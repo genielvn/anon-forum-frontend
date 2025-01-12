@@ -18,14 +18,12 @@ const RepliesInput: React.FC<ReplyInputProps> = ({
     const [message, setMessage] = useState("");
     const imageInput = useRef<HTMLInputElement | null>(null);
 
-    const router = useRouter();
-
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsSubmitting(true);
         setMessage("");
 
-        if (!reply || !replyImage) {
+        if (!reply && !replyImage) {
             setMessage("Please include a text to your reply.");
             setIsSubmitting(false);
             return;

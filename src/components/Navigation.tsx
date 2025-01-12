@@ -12,7 +12,7 @@ const Navigation = () => {
                     Boards
                 </Link>
             </div>
-            <Link href={"/user"}>
+            <Link href={"/u"}>
                 <i className={`bi bi-person-circle ${style.account}`}></i>
             </Link>
         </nav>

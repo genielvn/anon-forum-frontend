@@ -10,7 +10,7 @@ interface UserBannerProps {
 
 const UserBanner: React.FC<UserBannerProps> = ({}) => {
     return (
-        <div className={style.banner}>
+        
             <div className={style.banner__box}>
                 <Image
                     src={banner}
@@ -35,7 +35,6 @@ const UserBanner: React.FC<UserBannerProps> = ({}) => {
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 
