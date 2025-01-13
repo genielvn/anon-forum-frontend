@@ -9,6 +9,7 @@ interface User {
     username: string;
     profile_banner: string | null;
     profile_picture: string | null;
+    university: string;
 }
 interface ThreadData {
     id: number;
@@ -41,7 +42,7 @@ export default function UserOthers({ params }: UserProps) {
     );
 
     if (isLoading) return;
-    
+
     if (error) {
         return notFound();
     }

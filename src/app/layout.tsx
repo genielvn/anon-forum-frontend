@@ -23,7 +23,6 @@ export default function RootLayout({
             </head>
             <body className={InterFont.className}>
                 {children}
-                <footer style={{ "margin": "5em" }}></footer>
             </body>
         </html>
     );

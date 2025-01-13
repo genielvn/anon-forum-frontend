@@ -117,6 +117,49 @@ export default function UserYou() {
         }
     };
 
+    const handleAccountDeletion = async () => {
+        const confirmation = confirm(
+            "Are you sure you want to delete your account? This action is irreversible."
+        );
+
+        if (!confirmation) return;
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.error("User is not authenticated.");
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:8000/s/delete-account/`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Account deletion failed:", errorData);
+                alert("Failed to delete the account. Please try again.");
+                return;
+            }
+
+            alert("Your account has been deleted successfully.");
+            localStorage.removeItem("token");
+            window.location.href = "/a";
+        } catch (error) {
+            console.error(
+                "An error occurred while deleting the account:",
+                error
+            );
+            alert("Something went wrong. Please try again.");
+        }
+    };
+
     if (isLoading) {
         return <p>Loading...</p>;
     }
@@ -219,6 +262,15 @@ export default function UserYou() {
                             )}
                         </div>
                     </div>
+                </div>
+                <div className={style.settings__division}>
+                    <h3>Danger Zone</h3>
+                    <button
+                        className="btn-small btn-red"
+                        onClick={handleAccountDeletion}
+                    >
+                        Delete Account
+                    </button>
                 </div>
             </div>
         </>

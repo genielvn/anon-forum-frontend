@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { notFound } from "next/navigation";
 import style from "./page.module.scss";
 import RepliesInput from "@/components/RepliesInput";
@@ -56,6 +57,8 @@ export default function Thread({ params }: ThreadProps) {
         `http://127.0.0.1:8000/b/${board_id}/${thread_id}/replies/`
     );
 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
     if (isLoading) {
         return;
     }
@@ -69,12 +72,70 @@ export default function Thread({ params }: ThreadProps) {
         formatDistanceToNow(new Date(data.thread.created_at as string), {
             addSuffix: true,
         });
+
+    const handleDelete = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            return; // Handle the case where the user is not authenticated
+        }
+
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:8000/b/${board_id}/${thread_id}/delete/`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (response.ok) {
+                alert("Thread deleted successfully!");
+                window.location.href = `/b/${board_id}`; // Redirect to the board
+            } else {
+                const errorData = await response.json();
+                alert(errorData?.error || "Failed to delete the thread.");
+            }
+        } catch (error) {
+            alert("Something went wrong. Please try again.");
+        }
+    };
+
+    const currentUser = localStorage.getItem("user");
+    const isAdmin = localStorage.getItem("isAdmin") === "true"; // Admin status stored in localStorage
+
     return (
         <>
             <Link className="subheader" href={`/b/${data?.board.board_id}`}>
                 /{data?.board.board_id}/ - {data?.board.name}
             </Link>
-            <h2 className={style.thread__title}>{data?.thread.title}</h2>
+            <div className={style.thread__header}>
+                <h2 className={style.thread__title}>{data?.thread.title}</h2>
+                {(data?.thread.author === currentUser || isAdmin) && ( // Allow delete for author or admin
+                    <div className={style.thread__dropdown}>
+                        <div className={style.thread__dropdown_button}>
+                            <i
+                                onClick={() =>
+                                    setIsDropdownOpen((prev) => !prev)
+                                }
+                                className="bi bi-three-dots"
+                            ></i>
+                        </div>
+                        {isDropdownOpen && (
+                            <div className={style.thread__dropdown_menu}>
+                                <div
+                                    className={style.thread__dropdown_item}
+                                    onClick={handleDelete}
+                                >
+                                    Delete
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
             <div className={style.thread__details}>
                 by{" "}
                 <Link href={`/u/${data?.thread.author}`}>
@@ -102,10 +163,10 @@ export default function Thread({ params }: ThreadProps) {
             <h3>Replies</h3>
             {replies?.length === 0
                 ? "No replies yet"
-                : replies?.map((reply, index) => (
+                : replies?.map((reply) => (
                       <Reply
                           key={reply.id}
-                          id={index + 1}
+                          id={reply.id}
                           author={reply.author}
                           content={reply.body}
                           created_at={reply.created_at}

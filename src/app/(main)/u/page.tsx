@@ -9,6 +9,7 @@ interface User {
     username: string;
     profile_banner: string | null;
     profile_picture: string | null;
+    university: string;
 }
 interface ThreadData {
     id: number;

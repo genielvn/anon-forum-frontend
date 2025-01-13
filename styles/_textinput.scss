@@ -2,7 +2,7 @@
 
 input[type="text"],
 input[type="password"],
-textarea {
+textarea, select {
     border: 2px $pink solid;
     font-size: 1em;
     padding: 12px;
@@ -12,6 +12,7 @@ textarea {
     box-sizing: border-box;
     resize: vertical;
     margin: 5px 0;
+    background-color: white;
 }
 
 textarea {

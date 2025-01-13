@@ -29,6 +29,8 @@ export default function AccountSignIn() {
                 const data = await response.json();
                 // Store the JWT token in localStorage or cookies
                 localStorage.setItem("token", data.token);
+                localStorage.setItem("user", data.user);
+                localStorage.setItem("isAdmin", data.isAdmin);
 
                 // Redirect to the boards list or homepage
                 router.push("/b");
@@ -76,7 +78,10 @@ export default function AccountSignIn() {
                     >
                         {"Don't have an account?"}
                     </button>
-                    <button type="submit" className="btn-full-width btn-solid-pink">
+                    <button
+                        type="submit"
+                        className="btn-full-width btn-solid-pink"
+                    >
                         Sign In
                     </button>
                 </div>

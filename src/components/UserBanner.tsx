@@ -8,6 +8,7 @@ interface User {
     username: string;
     profile_banner: string | null;
     profile_picture: string | null;
+    university: string;
 }
 interface UserBannerProps {
     data: User | undefined;
@@ -45,9 +46,9 @@ export default function UserBanner({ data }: UserBannerProps) {
                     <div className={style.banner__text_user}>
                         {data?.username}
                     </div>
-                    {/* <div className={style.banner__text_school}>
-                        Far Eastern University
-                    </div> */}
+                    <div className={style.banner__text_school}>
+                        {data?.university}
+                    </div>
                 </div>
             </div>
         </div>
