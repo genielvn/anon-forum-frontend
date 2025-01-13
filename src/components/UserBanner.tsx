@@ -4,38 +4,52 @@ import style from "./UserBanner.module.scss";
 import banner from "@/public/default_banner.jpg";
 import icon from "@/public/default_basil.jpg";
 
+interface User {
+    username: string;
+    profile_banner: string | null;
+    profile_picture: string | null;
+}
 interface UserBannerProps {
-    message?: string;
+    data: User | undefined;
 }
 
-const UserBanner: React.FC<UserBannerProps> = ({}) => {
+export default function UserBanner({ data }: UserBannerProps) {
     return (
-        
-            <div className={style.banner__box}>
+        <div className={style.banner__box}>
+            <Image
+                src={
+                    data?.profile_banner
+                        ? `http://127.0.0.1:8000${data?.profile_banner}`
+                        : banner
+                }
+                className={style.banner__cover}
+                alt="cover"
+                objectFit="cover"
+                height={500}
+                width={500}
+            />
+            <div className={style.banner__details}>
                 <Image
-                    src={banner}
-                    className={style.banner__cover}
-                    alt="cover"
-                    objectFit="cover"
-                />
-                <div className={style.banner__details}>
-                    <Image
-                        src={icon}
-                        height={120}
-                        width={120}
-                        alt="profile-pic"
-                        objectFit="fill"
-                        className={style.banner__image}
-                    ></Image>
-                    <div className={style.banner__text}>
-                        <div className={style.banner__text_user}>SmiliePop</div>
-                        <div className={style.banner__text_school}>
-                            Far Eastern University
-                        </div>
+                    src={
+                        data?.profile_picture
+                            ? `http://127.0.0.1:8000${data?.profile_picture}`
+                            : icon
+                    }
+                    height={120}
+                    width={120}
+                    alt="profile-pic"
+                    objectFit="fill"
+                    className={style.banner__image}
+                ></Image>
+                <div className={style.banner__text}>
+                    <div className={style.banner__text_user}>
+                        {data?.username}
                     </div>
+                    {/* <div className={style.banner__text_school}>
+                        Far Eastern University
+                    </div> */}
                 </div>
             </div>
+        </div>
     );
-};
-
-export default UserBanner;
+}

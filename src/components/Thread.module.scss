@@ -9,6 +9,8 @@
 .thread__title {
     font-size: 1em;
     font-weight: 600;
+    overflow: visible;
+    word-wrap: break-word;
 }
 
 .thread__details {
@@ -24,6 +26,8 @@
 
 .thread__text {
     font-size: 1em;
+    overflow: visible;
+    word-wrap: break-word;
 }
 .thread__image {
     width: 35%;

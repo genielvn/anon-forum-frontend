@@ -16,7 +16,7 @@ const quote404 = [
 
 export default function Custom404() {
     const router = useRouter();
-    const token = localStorage.getItem("token"); // Or cookies, depending on storage method
+    const token = localStorage.getItem("token"); 
 
     const goToBoards = () => {
         router.push("/b");

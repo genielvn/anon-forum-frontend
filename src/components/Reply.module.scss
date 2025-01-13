@@ -7,12 +7,21 @@
 
 .reply__details {
     font-size: 0.75em;
+    overflow: visible;
+    word-wrap: break-word;
 }
 
 .reply__details_author {
     font-weight: 600;
+    overflow: visible;
+    word-wrap: break-word;
 }
 
 .reply__image {
     width: 30%;
+}
+
+.reply__content {
+    overflow: visible;
+    word-wrap: break-word;
 }

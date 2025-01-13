@@ -2,7 +2,6 @@ import style from "./ThreadReplyTab.module.scss";
 import { useState } from "react";
 import UserThread from "./UserThread";
 import UserReply from "./UserReply";
-import useFetch from "@/hooks/useFetch";
 
 interface ThreadData {
     id: number;
@@ -17,17 +16,18 @@ interface ReplyData {
     body: string;
     img_upload: string | null;
     created_at: string;
+    board: string;
+    thread: number;
 }
 interface UserData {
     threads: ThreadData[];
     replies: ReplyData[];
 }
 
-export default function ThreadReplyTab() {
-    const { data, error, isLoading } = useFetch<UserData>(
-        `http://127.0.0.1:8000/u/`
-    );
-
+interface ThreadReplyTabProps {
+    data: UserData | null;
+}
+export default function ThreadReplyTab({ data }: ThreadReplyTabProps) {
     const [activeTab, setActiveTab] = useState<"threads" | "replies">(
         "threads"
     );
@@ -59,8 +59,6 @@ export default function ThreadReplyTab() {
 
             {activeTab === "threads" && (
                 <div>
-                    {isLoading && <p>Loading threads...</p>}
-                    {error && <p>Error loading threads: {error}</p>}
                     {data?.threads.length === 0 && <p>No threads found.</p>}
                     {data?.threads.map((reply, index) => (
                         <UserThread
@@ -78,8 +76,6 @@ export default function ThreadReplyTab() {
 
             {activeTab === "replies" && (
                 <div>
-                    {isLoading && <p>Loading replies...</p>}
-                    {error && <p>Error loading replies: {error}</p>}
                     {data?.replies.length === 0 && <p>No replies found.</p>}
                     {data?.replies.map((reply, index) => (
                         <UserReply
@@ -88,6 +84,8 @@ export default function ThreadReplyTab() {
                             content={reply.body}
                             img_upload={reply.img_upload}
                             created_at={reply.created_at}
+                            board={reply.board}
+                            thread={reply.thread}
                         />
                     ))}
                 </div>

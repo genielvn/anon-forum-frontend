@@ -2,12 +2,15 @@ import React from "react";
 import style from "./Reply.module.scss";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
+import Link from "next/link";
 
 interface ReplyProps {
-    thread_title: string
+    thread_title: string;
     content: string;
     img_upload: string | null;
     created_at: string;
+    board: string;
+    thread: number;
 }
 
 const UserReply: React.FC<ReplyProps> = ({
@@ -15,6 +18,8 @@ const UserReply: React.FC<ReplyProps> = ({
     content,
     created_at,
     img_upload,
+    board,
+    thread,
 }) => {
     const relativeTime = formatDistanceToNow(new Date(created_at), {
         addSuffix: true, // Adds "ago" at the end
@@ -23,9 +28,12 @@ const UserReply: React.FC<ReplyProps> = ({
     return (
         <div className={style.reply}>
             <div className={style.reply__details}>
-                <span className={style.reply__details_author}>
+                <Link
+                    href={`/b/${board}/${thread}`}
+                    className={style.reply__details_author}
+                >
                     {thread_title}
-                </span>{" "}
+                </Link>{" "}
                 • {relativeTime}
             </div>
             <div className={style.reply__content}>{content}</div>

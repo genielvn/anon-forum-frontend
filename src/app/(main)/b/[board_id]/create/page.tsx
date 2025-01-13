@@ -5,6 +5,7 @@ import style from "./page.module.scss";
 import useFetch from "@/hooks/useFetch";
 import { useRouter, notFound } from "next/navigation";
 import Image from "next/image";
+import Checkbox from "@/components/Checkbox";
 
 interface CreateThreadProps {
     params: {
@@ -29,9 +30,10 @@ export default function CreateThread({ params }: CreateThreadProps) {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
     const [image, setImage] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null); // For image preview
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
+    const [isAnonymous, setIsAnonymous] = useState(false); // Track checkbox state
     const token = localStorage.getItem("token");
     const router = useRouter();
 
@@ -46,7 +48,7 @@ export default function CreateThread({ params }: CreateThreadProps) {
         if (event.target.files) {
             const file = event.target.files[0];
             setImage(file);
-            setImagePreview(URL.createObjectURL(file)); // Set the preview URL
+            setImagePreview(URL.createObjectURL(file));
         }
     };
 
@@ -61,6 +63,12 @@ export default function CreateThread({ params }: CreateThreadProps) {
             return;
         }
 
+        if (title.length > 100) {
+            setMessage("Title is too long! Please limit to 100 characters.");
+            setIsSubmitting(false);
+            return;
+        }
+
         if (!body && !image) {
             setMessage("Please post an image or a body.");
             setIsSubmitting(false);
@@ -71,8 +79,7 @@ export default function CreateThread({ params }: CreateThreadProps) {
         formData.append("title", title);
         formData.append("body", body);
         if (image) formData.append("img_upload", image);
-
-        // Retrieve the JWT token from localStorage
+        formData.append("anonymous", isAnonymous ? "true" : "false");
 
         try {
             const response = await fetch(
@@ -81,7 +88,7 @@ export default function CreateThread({ params }: CreateThreadProps) {
                     method: "POST",
                     body: formData,
                     headers: {
-                        Authorization: `Bearer ${token}`, // Add the token here
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
@@ -119,6 +126,7 @@ export default function CreateThread({ params }: CreateThreadProps) {
                         onChange={(e) => setTitle(e.target.value)}
                     />
                 </div>
+                <p className="right">{100 - title.length}</p>
                 <div className={style.new_thread__input_divider}>
                     <label htmlFor="thread-new-text">Content</label>
                     <textarea
@@ -138,7 +146,7 @@ export default function CreateThread({ params }: CreateThreadProps) {
                     {imagePreview && (
                         <div className={style.new_thread__img_preview}>
                             <Image
-                                src={imagePreview} // Use the preview URL
+                                src={imagePreview}
                                 alt="Thread Image Preview"
                                 layout="responsive"
                                 width={400}
@@ -148,14 +156,21 @@ export default function CreateThread({ params }: CreateThreadProps) {
                     )}
                 </div>
                 {message && <p className="error">{message}</p>}
-                <div className={style.new_thread__input_divider}>
+                <div className={style.new_thread__input_divider_flexrow}>
                     <button
                         type="submit"
                         className="btn-small btn-pink"
                         disabled={isSubmitting}
+                        style={{ marginRight: "20px" }}
                     >
                         {isSubmitting ? "Submitting..." : "Post"}
                     </button>
+                    <Checkbox
+                        id="anon"
+                        text="Post as Anonymous"
+                        checked={isAnonymous}
+                        onChange={() => setIsAnonymous(!isAnonymous)}
+                    />
                 </div>
             </form>
         </>

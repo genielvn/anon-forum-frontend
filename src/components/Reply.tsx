@@ -2,6 +2,8 @@ import React from "react";
 import style from "./Reply.module.scss";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
+import ReactMarkdown from "react-markdown";
+import Link from "next/link";
 
 interface ReplyProps {
     id: number;
@@ -26,10 +28,12 @@ const Reply: React.FC<ReplyProps> = ({
         <div className={style.reply}>
             <div className={style.reply__details}>
                 #{id} •{" "}
-                <span className={style.reply__details_author}>{author}</span> •{" "}
+                <Link href={`/u/${author}`} className={style.reply__details_author}>{author}</Link> •{" "}
                 {relativeTime}
             </div>
-            <div className={style.reply__content}>{content}</div>
+            <div className={style.reply__content}>
+                <ReactMarkdown>{content}</ReactMarkdown>
+            </div>
             {img_upload && (
                 <div className={style.reply__image}>
                     <Image

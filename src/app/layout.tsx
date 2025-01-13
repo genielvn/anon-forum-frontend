@@ -21,7 +21,10 @@ export default function RootLayout({
                     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
                 ></link>
             </head>
-            <body className={InterFont.className}>{children}</body>
+            <body className={InterFont.className}>
+                {children}
+                <footer style={{ "margin": "5em" }}></footer>
+            </body>
         </html>
     );
 }

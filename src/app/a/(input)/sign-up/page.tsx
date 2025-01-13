@@ -16,7 +16,7 @@ export default function AccountSignUp() {
         setErrorMessage("");
 
         if (password != confirmPassword) {
-            setErrorMessage("Password does not match.");
+            setErrorMessage("Passwords do not match!");
             return;
         }
 
@@ -39,6 +39,7 @@ export default function AccountSignUp() {
                 router.push("/b");
             } else {
                 const errorData = await response.json();
+                console.log(errorData)
                 setErrorMessage(errorData.error || "Invalid credentials.");
             }
         } catch (error) {
@@ -107,7 +108,7 @@ export default function AccountSignUp() {
                         type="submit"
                         className="btn-full-width btn-solid-pink"
                     >
-                        Sign In
+                        Sign Up
                     </button>
                 </div>
             </form>

@@ -26,6 +26,7 @@ function useFetch<T>(url: string): Result<T> {
                     throw new Error("Failed to fetch");
                 }
                 const result: T = await response.json();
+                console.log(result)
                 setData(result);
             } catch (err) {
                 setError((err as Error).message);

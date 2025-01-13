@@ -52,7 +52,7 @@ export default function Thread({ params }: ThreadProps) {
     const { data, error, isLoading } = useFetch<Data>(
         `http://127.0.0.1:8000/b/${board_id}/${thread_id}/`
     );
-    const { data: replies} = useFetch<RepliesData[]>(
+    const { data: replies } = useFetch<RepliesData[]>(
         `http://127.0.0.1:8000/b/${board_id}/${thread_id}/replies/`
     );
 
@@ -74,12 +74,18 @@ export default function Thread({ params }: ThreadProps) {
             <Link className="subheader" href={`/b/${data?.board.board_id}`}>
                 /{data?.board.board_id}/ - {data?.board.name}
             </Link>
-            <h2>{data?.thread.title}</h2>
+            <h2 className={style.thread__title}>{data?.thread.title}</h2>
             <div className={style.thread__details}>
-                by {data?.thread.author} • posted {relativeTime}
+                by{" "}
+                <Link href={`/u/${data?.thread.author}`}>
+                    {data?.thread.author}
+                </Link>{" "}
+                • posted {relativeTime}
             </div>
             <div className={style.thread__text}>
-                <ReactMarkdown>{data?.thread.body || ""}</ReactMarkdown>
+                <ReactMarkdown className={style.thread__text}>
+                    {data?.thread.body || ""}
+                </ReactMarkdown>
             </div>
             {data?.thread.img_upload && (
                 <div className={style.thread__image}>

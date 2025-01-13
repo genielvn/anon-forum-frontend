@@ -21,7 +21,7 @@ interface ThreadData {
 interface ReplyData {
     thread_title: string;
     body: string;
-    img_upload: string | null;
+    img_upload: string | undefined;
     created_at: string;
     board: string;
     thread: number;
@@ -31,23 +31,10 @@ interface UserData {
     threads: ThreadData[];
     replies: ReplyData[];
 }
-export default function UserYou() {
-    const { data, error, isLoading } = useFetch<UserData>(
-        `http://127.0.0.1:8000/u/`
-    );
 
-    if (isLoading) {
-        return;
-    }
-
-    if (error) {
-        return notFound();
-    }
-
-    return (
-        <>
-            <UserBanner data={data?.user} />
-            <ThreadReplyTab data={data} />
-        </>
-    );
+interface UserProps {
+    params: { username: string };
+}
+export default function UserOthers({ params }: UserProps) {
+    return <></>
 }

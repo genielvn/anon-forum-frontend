@@ -2,6 +2,12 @@
     margin: 12px 0px;
 }
 
+.new_thread__input_divider_flexrow {
+    display: flex;
+    flex-direction: row;
+    margin: 12px 0px;
+}
+
 .new_thread__input_divider label {
     display: block;
 }
