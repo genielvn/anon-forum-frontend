@@ -61,6 +61,7 @@ export default function AccountSignUp() {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("user", data.user);
                 localStorage.setItem("isAdmin", data.isAdmin);
+                localStorage.setItem("isBanned", data.isBanned);
                 router.push("/b");
             } else {
                 const errorData = await response.json();

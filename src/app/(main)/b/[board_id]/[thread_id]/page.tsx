@@ -105,6 +105,7 @@ export default function Thread({ params }: ThreadProps) {
 
     const currentUser = localStorage.getItem("user");
     const isAdmin = localStorage.getItem("isAdmin") === "true"; // Admin status stored in localStorage
+    const isBanned = localStorage.getItem("isBanned") === "true"; // Check if the user is banned
 
     return (
         <>
@@ -159,7 +160,14 @@ export default function Thread({ params }: ThreadProps) {
                     />
                 </div>
             )}
-            <RepliesInput board_id={board_id} thread_id={thread_id} />
+            {!isBanned && (
+                <RepliesInput board_id={board_id} thread_id={thread_id} />
+            )}
+            {isBanned && (
+                <p style={{ color: "red", margin: "1rem 0" }}>
+                    You are banned and cannot post replies.
+                </p>
+            )}
             <h3>Replies</h3>
             {replies?.length === 0
                 ? "No replies yet"

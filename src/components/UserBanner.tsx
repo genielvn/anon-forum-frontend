@@ -9,6 +9,8 @@ interface User {
     profile_banner: string | null;
     profile_picture: string | null;
     university: string;
+    is_banned: string;
+    is_admin: string;
 }
 interface UserBannerProps {
     data: User | undefined;

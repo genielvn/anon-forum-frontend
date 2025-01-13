@@ -40,6 +40,8 @@ export default function ThreadList({ params }: ThreadListProps) {
         `http://127.0.0.1:8000/b/${board_id}/`
     );
 
+    const isBanned = localStorage.getItem("isBanned") === "true";
+
     if (isLoading) {
         return;
     }
@@ -55,7 +57,12 @@ export default function ThreadList({ params }: ThreadListProps) {
                 {data?.board.description}
             </p>
             <div className={style.thread__list}>
-                <ThreadCreate board={board_id} />
+                {!isBanned && <ThreadCreate board={board_id} />}
+                {isBanned && (
+                    <p style={{ color: "red", margin: "1rem 0" }}>
+                        You are banned and cannot create threads.
+                    </p>
+                )}
                 {data?.threads.map((thread) => (
                     <Thread
                         key={thread.id}

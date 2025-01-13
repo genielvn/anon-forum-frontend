@@ -31,6 +31,7 @@ export default function AccountSignIn() {
                 localStorage.setItem("token", data.token);
                 localStorage.setItem("user", data.user);
                 localStorage.setItem("isAdmin", data.isAdmin);
+                localStorage.setItem("isBanned", data.isBanned);
 
                 // Redirect to the boards list or homepage
                 router.push("/b");
