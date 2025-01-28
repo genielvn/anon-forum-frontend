@@ -66,7 +66,7 @@ export default function UserOthers({ params }: UserProps) {
                 throw new Error(json.error);
             }
 
-            alert("User banned successfully");
+            alert("Toggle ban successfully done");
             window.location.reload(); // Reload to reflect changes
         } catch (error) {
             console.error("Error banning user:", error);
@@ -78,7 +78,8 @@ export default function UserOthers({ params }: UserProps) {
 
     if (error) {
         return notFound();
-    }
+    }   
+
 
     return (
         <>
@@ -93,7 +94,7 @@ export default function UserOthers({ params }: UserProps) {
                         className="btn-small btn-red"
                         onClick={handleBanUser}
                     >
-                        Ban User
+                        {data?.user.is_banned == true ? "Unban User" : "Ban User"}
                     </button>
                 </div>
             )}
