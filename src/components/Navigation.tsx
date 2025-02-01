@@ -15,6 +15,9 @@ const Navigation = () => {
         <nav>
             <Image src={Logo} alt="logo" width={40}></Image>
             <div className={style.menu}>
+                <Link href={"/f/"} className={style.menu__list}>
+                    Feed
+                </Link>
                 <Link href={"/b/"} className={style.menu__list}>
                     Boards
                 </Link>

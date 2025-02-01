@@ -7,6 +7,7 @@ import Image from "next/image";
 
 interface ThreadProps {
     board: string;
+    board_name: string;
     id: number;
     title: string;
     text: string;
@@ -14,11 +15,12 @@ interface ThreadProps {
     replyCount: number;
     updated_at: string;
     img_upload: string | null;
-    index: number
+    index: number;
 }
 
-const Thread: React.FC<ThreadProps> = ({
+const FeedThread: React.FC<ThreadProps> = ({
     board,
+    board_name,
     id,
     title,
     text,
@@ -34,11 +36,11 @@ const Thread: React.FC<ThreadProps> = ({
 
     const limitedText = text.length > 200 ? `${text.slice(0, 200)}...` : text;
 
-    const styleToUse = index % 2 === 0 ? style.thread : `${style.thread} ${style.thread__alt}`
 
     return (
         <Link href={`/b/${board}/${id}`} style={{ textDecoration: "none" }}>
-            <div className={styleToUse}>
+            <div className={style.thread}>
+                <div className={style.thread__board}>/{board}/ - {board_name}</div>
                 <div className={style.thread__title}>{title}</div>
                 <div className={style.thread__details}>
                     by {author} •{" "}
@@ -65,4 +67,4 @@ const Thread: React.FC<ThreadProps> = ({
     );
 };
 
-export default Thread;
+export default FeedThread;

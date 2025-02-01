@@ -14,6 +14,11 @@ export default function AccountSignUp() {
     const router = useRouter();
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            router.push("/b"); // Redirect to /b if the token exists
+        }
+
         const fetchUniversities = async () => {
             try {
                 const response = await fetch(
@@ -31,7 +36,7 @@ export default function AccountSignUp() {
         };
 
         fetchUniversities();
-    }, []);
+    }, [router]);
 
     const handleSignInSubmit = async (event: React.FormEvent) => {
         event.preventDefault();

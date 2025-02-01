@@ -162,16 +162,21 @@ export default function Thread({ params }: ThreadProps) {
                         </div>
                         {isDropdownOpen && (
                             <div className={style.thread__dropdown_menu}>
-                                <div
-                                    className={style.thread__dropdown_item}
-                                    onClick={() => {
-                                        setBeingEdited(true);
-                                        setEditedBody(data?.thread.body || "");
-                                        setIsDropdownOpen(false);
-                                    }}
-                                >
-                                    Edit
-                                </div>
+                                {!isBanned && (
+                                    <div
+                                        className={style.thread__dropdown_item}
+                                        onClick={() => {
+                                            setBeingEdited(true);
+                                            setEditedBody(
+                                                data?.thread.body || ""
+                                            );
+                                            setIsDropdownOpen(false);
+                                        }}
+                                    >
+                                        Edit
+                                    </div>
+                                )}
+
                                 <div
                                     className={style.thread__dropdown_item}
                                     onClick={handleDelete}
@@ -224,15 +229,17 @@ export default function Thread({ params }: ThreadProps) {
                     />
                 </div>
             )}
-            {!isBanned && (
-                <RepliesInput board_id={board_id} thread_id={thread_id} />
-            )}
-            {isBanned && (
+            {!isBanned ? (
+                !beingEdited && (
+                    <RepliesInput board_id={board_id} thread_id={thread_id} />
+                )
+            ) : (
                 <p style={{ color: "red", margin: "1rem 0" }}>
                     You are banned and cannot post replies.
                 </p>
             )}
-            <h3>Replies</h3>
+
+            <h3 style={{ marginTop: "1em"}}>Replies</h3>
             {replies?.length === 0
                 ? "No replies yet"
                 : replies?.map((reply) => (

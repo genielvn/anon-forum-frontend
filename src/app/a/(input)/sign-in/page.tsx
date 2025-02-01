@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import style from "./page.module.scss";
 
@@ -9,6 +9,12 @@ export default function AccountSignIn() {
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            router.push("/b"); // Redirect to /b if the token exists
+        }
+    }, [router]);
     const handleSignInSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setErrorMessage(""); // Clear any previous errors

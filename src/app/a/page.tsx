@@ -4,10 +4,18 @@ import Image from "next/image";
 import style from "./page.module.scss";
 import Logo from "@/public/logo.png";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Account() {
     const router = useRouter();
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            router.push("/b"); // Redirect to /b if the token exists
+        }
+    }, [router]);
+    
     return (
         <div className={style.account__div}>
             <div className={style.account__first_half}>

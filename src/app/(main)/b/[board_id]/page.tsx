@@ -63,7 +63,7 @@ export default function ThreadList({ params }: ThreadListProps) {
                         You are banned and cannot create threads.
                     </p>
                 )}
-                {data?.threads.map((thread) => (
+                {data?.threads.map((thread, index) => (
                     <Thread
                         key={thread.id}
                         id={thread.id}
@@ -74,6 +74,7 @@ export default function ThreadList({ params }: ThreadListProps) {
                         replyCount={thread.reply_count}
                         updated_at={thread.updated_at}
                         img_upload={thread.img_upload}
+                        index={index}
                     />
                 ))}
             </div>

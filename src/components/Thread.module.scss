@@ -4,6 +4,16 @@
     background-color: $light-pink;
     padding: 10px;
     margin: 5px 0px;
+   
+}
+
+.thread__alt {
+    background-color: $light-pink-2;
+}
+
+.thread:nth-child(even) {
+    background-color: $dark-pink;
+
 }
 
 .thread__title {
