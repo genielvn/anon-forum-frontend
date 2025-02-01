@@ -58,6 +58,8 @@ export default function Thread({ params }: ThreadProps) {
     );
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [beingEdited, setBeingEdited] = useState(false);
+    const [editedBody, setEditedBody] = useState("");
 
     if (isLoading) {
         return;
@@ -73,6 +75,40 @@ export default function Thread({ params }: ThreadProps) {
             addSuffix: true,
         });
 
+    const handleEdit = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:8000/b/${board_id}/${thread_id}/edit/`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        body: editedBody,
+                    }),
+                }
+            );
+
+            if (response.ok) {
+                alert("Thread updated successfully!");
+                window.location.reload();
+            } else {
+                const errorData = await response.json();
+                alert(errorData?.error || "Failed to update the thread.");
+            }
+        } catch (error) {
+            console.log(error);
+            alert("Something went wrong. Please try again.");
+        }
+    };
     const handleDelete = async () => {
         const token = localStorage.getItem("token");
 
@@ -128,6 +164,16 @@ export default function Thread({ params }: ThreadProps) {
                             <div className={style.thread__dropdown_menu}>
                                 <div
                                     className={style.thread__dropdown_item}
+                                    onClick={() => {
+                                        setBeingEdited(true);
+                                        setEditedBody(data?.thread.body || "");
+                                        setIsDropdownOpen(false);
+                                    }}
+                                >
+                                    Edit
+                                </div>
+                                <div
+                                    className={style.thread__dropdown_item}
                                     onClick={handleDelete}
                                 >
                                     Delete
@@ -144,11 +190,29 @@ export default function Thread({ params }: ThreadProps) {
                 </Link>{" "}
                 • posted {relativeTime}
             </div>
-            <div className={style.thread__text}>
-                <ReactMarkdown className={style.thread__text}>
-                    {data?.thread.body || ""}
-                </ReactMarkdown>
-            </div>
+
+            {beingEdited ? (
+                <div className={style.thread__text}>
+                    <textarea
+                        value={editedBody}
+                        onChange={(e) => setEditedBody(e.target.value)}
+                    />
+                    <button className="btn-small btn-pink" onClick={handleEdit}>
+                        Save
+                    </button>
+                    <button
+                        className="btn-small btn-pink"
+                        onClick={() => setBeingEdited(false)}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            ) : (
+                <div className={style.thread__text}>
+                    <ReactMarkdown>{data?.thread.body || ""}</ReactMarkdown>
+                </div>
+            )}
+
             {data?.thread.img_upload && (
                 <div className={style.thread__image}>
                     <Image

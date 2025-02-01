@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
 import style from "./RepliesInput.module.scss";
-import { useRouter } from "next/navigation";
 import Checkbox from "@/components/Checkbox"; // Import your Checkbox component
 
 interface ReplyInputProps {
