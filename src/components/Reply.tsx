@@ -67,12 +67,19 @@ const Reply: React.FC<ReplyProps> = ({
         <div className={style.reply}>
             <div className={style.reply__details}>
                 #{id} •{" "}
-                <Link
-                    href={`/u/${author}`}
-                    className={style.reply__details_author}
-                >
-                    {author}
-                </Link>{" "}
+                {author === "Anonymous" ? (
+                    <span className={style.reply__details_author}>
+                        {author}
+                    </span>
+                ) : (
+                    <Link
+                        href={`/u/${author}`}
+                        className={style.reply__details_author}
+                    >
+                        {author}
+                    </Link>
+                )}
+            
                 • {relativeTime} •{" "}
                 {(currentUser === author || isAdmin) && ( // Check if the user is the author or an Admin
                     <span

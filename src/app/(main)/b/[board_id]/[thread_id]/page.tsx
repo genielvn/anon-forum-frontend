@@ -190,9 +190,13 @@ export default function Thread({ params }: ThreadProps) {
             </div>
             <div className={style.thread__details}>
                 by{" "}
-                <Link href={`/u/${data?.thread.author}`}>
-                    {data?.thread.author}
-                </Link>{" "}
+                {data?.thread.author === "Anonymous" ? (
+                    <span>{data?.thread.author}</span>
+                ) : (
+                    <Link href={`/u/${data?.thread.author}`}>
+                        {data?.thread.author}
+                    </Link>
+                )}{" "}
                 • posted {relativeTime}
             </div>
 
@@ -239,7 +243,7 @@ export default function Thread({ params }: ThreadProps) {
                 </p>
             )}
 
-            <h3 style={{ marginTop: "1em"}}>Replies</h3>
+            <h3 style={{ marginTop: "1em" }}>Replies</h3>
             {replies?.length === 0
                 ? "No replies yet"
                 : replies?.map((reply) => (

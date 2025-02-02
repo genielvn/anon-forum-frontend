@@ -36,5 +36,5 @@ interface UserProps {
     params: { username: string };
 }
 export default function UserOthers({ params }: UserProps) {
-    return <></>
+    return notFound();
 }
