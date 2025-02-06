@@ -1,3 +1,29 @@
+/**
+ * Program Title: Thread and Reply Tab Component (ThreadReplyTab.tsx)
+ *
+ * Programmers: Genesis Lovino, David Andrei Estrella
+ *
+ * Purpose:
+ * - The ThreadReplyTab component allows users to toggle between viewing their threads and replies.
+ *
+ * Where the program fits in the general system designs:
+ * - This component is part of the user profile section, displaying the user's threads and replies.
+ *
+ * Date written: April 2024
+ * Date revised: January 2025
+ *
+ * Data structures used:
+ * - ThreadData: Interface for thread information.
+ * - ReplyData: Interface for reply information.
+ * - UserData: Interface combining threads and replies.
+ *
+ * Algorithms used:
+ * - None
+ *
+ * Control Structures:
+ * - Conditional rendering based on the active tab (threads or replies).
+ */
+
 import style from "./ThreadReplyTab.module.scss";
 import { useState } from "react";
 import UserThread from "./UserThread";

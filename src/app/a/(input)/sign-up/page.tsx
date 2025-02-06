@@ -1,4 +1,38 @@
+/**
+ * Program Title: Sign Up Page (page.tsx)
+ *
+ * Programmers: Genesis Lovino, David Andrei Estrella
+ *
+ * Purpose:
+ * - This component renders a sign-up form for new users to create an account.
+ * - It handles user input for username, password, email, and university selection.
+ * - It performs client-side validation and communicates with the backend API to register the user.
+ *
+ * Where the program fits in the general system designs:
+ * - This page is part of the user authentication flow in the frontend application.
+ * - It is responsible for the user registration process.
+ *
+ * Date written: April 2024
+ * Date revised: January 2025
+ *
+ * Data structures used:
+ * - useState hooks: for managing form input states and error messages.
+ * - useEffect hook: for side effects such as fetching data and redirecting users.
+ * - JSON objects: for sending data to the backend API.
+ *
+ * Algorithms used:
+ * - Fetch API for making HTTP requests to the backend.
+ * - Conditional rendering based on user authentication status and form validation.
+ *
+ * Control Structures:
+ * - Conditional statements for rendering components based on user roles and states.
+ * - Async/await for handling asynchronous API calls.
+ * - useState hooks for managing component state.
+ * - useEffect hooks for side effects and data fetching.
+ */
+
 "use client";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import style from "./page.module.scss";

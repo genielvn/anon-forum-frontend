@@ -1,3 +1,32 @@
+/**
+ * Program Title: Replies Input Component (RepliesInput.tsx)
+ *
+ * Programmers: Genesis Lovino, David Andrei Estrella
+ *
+ * Purpose:
+ * - This component provides a form for users to submit replies to a specific thread on a board.
+ * - Users can input text, upload an image, and choose to post their reply anonymously.
+ *
+ * Where the program fits in the general system designs:
+ * - This component is part of the frontend of the anonforum application, specifically for handling user replies to threads.
+ *
+ * Date written: April 2024
+ * Date revised: January 2025
+ *
+ * Data structures used:
+ * - ReplyInputProps: Interface for the reply input component's props, containing board_id and thread_id.
+ * - useState hooks for managing component state (reply text, image, submission status, message, anonymous state).
+ * - useRef hook for managing the file input element.
+ * - JSON objects: for sending data to the backend API.
+ *
+ * Algorithms used:
+ * - Event handling for input changes and form submission.
+ * - Form submission handling with validation and asynchronous API call to post the reply.
+ *
+ * Control Structures:
+ * - Conditional checks for form validation and response handling.
+ */
+
 import React, { useRef, useState } from "react";
 import style from "./RepliesInput.module.scss";
 import Checkbox from "@/components/Checkbox"; // Import your Checkbox component

@@ -1,3 +1,37 @@
+/**
+ * Program Title: Thread Page (page.tsx)
+ *
+ * Programmers: Genesis Lovino, David Andrei Estrella
+ *
+ * Purpose:
+ * - This file contains the code for the thread page. This page displays the thread details and its replies.
+ *
+ * Where the program fits in the general system designs:
+ * - This file is part of the frontend of the application. It is a page that is accessible to users and displays the details of a thread and its replies.
+ *
+ * Date written: April 2024
+ * Date revised: January 2025
+ *
+ * Data structures used:
+ * - ThreadProps: Interface for the thread component's props, containing board_id and thread_id.
+ * - ThreadData: Interface for the thread data, including id, title, author, reply_count, body, created_at, and img_upload.
+ * - BoardData: Interface for the board data, including board_id, name, and description.
+ * - RepliesData: Interface for the replies data, including id, body, created_at, img_upload, and author.
+ * - Data: Interface combining BoardData and ThreadData.
+ *
+ * Algorithms used:
+ * - Fetching thread and replies data using custom useFetch hook.
+ * - Handling edit and delete operations with async functions and API calls.
+ * - Conditional rendering based on user roles and states (e.g., isAdmin, isBanned, beingEdited).
+ * - Formatting date to relative time using formatDistanceToNow from date-fns.
+ *
+ * Control Structures:
+ * - Conditional statements for rendering components based on user roles and states.
+ * - Async/await for handling asynchronous API calls.
+ * - useState hooks for managing component state.
+ * - useEffect hooks for side effects and data fetching.
+ */
+
 "use client";
 
 import React, { useState } from "react";

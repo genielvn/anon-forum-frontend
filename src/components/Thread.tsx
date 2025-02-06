@@ -1,3 +1,27 @@
+/**
+ * Program Title: Thread Component (Thread.tsx)
+ *
+ * Programmers: Genesis Lovino, David Andrei Estrella
+ *
+ * Purpose:
+ * - This component is used to display a single thread in the thread list. 
+ *
+ * Date written: April 2024
+ * Date revised: January 2025
+ *
+ * Data structures used:
+ * - ThreadProps: Interface for the thread component's props, containing board_id and thread_id.
+ *
+ * Algorithms used:
+ * - Limits the text to 200 characters
+ * - Applies alternating styles to threads
+ *
+ * Control Structures:
+ * - Conditional (ternary) operator for text limiting
+ * - Conditional (ternary) operator for applying styles
+ * - Conditional rendering for image upload
+ */
+
 import React from "react";
 import style from "./Thread.module.scss";
 import Link from "next/link";
