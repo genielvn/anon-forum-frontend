@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import style from "./page.module.scss";
 import RepliesInput from "@/components/RepliesInput";
 import Reply from "@/components/Reply";
@@ -56,6 +56,8 @@ export default function Thread({ params }: ThreadProps) {
     const { data: replies } = useFetch<RepliesData[]>(
         `http://127.0.0.1:8000/b/${board_id}/${thread_id}/replies/`
     );
+
+    const router = useRouter();
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [beingEdited, setBeingEdited] = useState(false);
@@ -113,7 +115,7 @@ export default function Thread({ params }: ThreadProps) {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            return; // Handle the case where the user is not authenticated
+            return;
         }
 
         try {
@@ -129,7 +131,7 @@ export default function Thread({ params }: ThreadProps) {
 
             if (response.ok) {
                 alert("Thread deleted successfully!");
-                window.location.href = `/b/${board_id}`; // Redirect to the board
+                window.location.href = `/b/${board_id}`;
             } else {
                 const errorData = await response.json();
                 alert(errorData?.error || "Failed to delete the thread.");
@@ -140,17 +142,28 @@ export default function Thread({ params }: ThreadProps) {
     };
 
     const currentUser = localStorage.getItem("user");
-    const isAdmin = localStorage.getItem("isAdmin") === "true"; // Admin status stored in localStorage
-    const isBanned = localStorage.getItem("isBanned") === "true"; // Check if the user is banned
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
+    const isBanned = localStorage.getItem("isBanned") === "true";
 
     return (
         <>
-            <Link className="subheader" href={`/b/${data?.board.board_id}`}>
-                /{data?.board.board_id}/ - {data?.board.name}
-            </Link>
+            <div>
+                <button
+                    onClick={() => router.back()}
+                    className="btn-small btn-pink"
+                >
+                    ← Back
+                </button>
+                <Link
+                    className="subheader margin-left-5 "
+                    href={`/b/${data?.board.board_id}`}
+                >
+                    /{data?.board.board_id}/ - {data?.board.name}
+                </Link>
+            </div>
             <div className={style.thread__header}>
                 <h2 className={style.thread__title}>{data?.thread.title}</h2>
-                {(data?.thread.author === currentUser || isAdmin) && ( // Allow delete for author or admin
+                {(data?.thread.author === currentUser || isAdmin) && (
                     <div className={style.thread__dropdown}>
                         <div className={style.thread__dropdown_button}>
                             <i
