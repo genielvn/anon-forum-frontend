@@ -147,7 +147,7 @@ export default function Thread({ params }: ThreadProps) {
 
     return (
         <>
-            <div>
+            <div className={style.thread__nav}>
                 <button
                     onClick={() => router.back()}
                     className="btn-small btn-pink"
@@ -155,7 +155,7 @@ export default function Thread({ params }: ThreadProps) {
                     ← Back
                 </button>
                 <Link
-                    className="subheader margin-left-5 "
+                    className={`subheader margin-left-5 ${style.thread__subheader}`}
                     href={`/b/${data?.board.board_id}`}
                 >
                     /{data?.board.board_id}/ - {data?.board.name}

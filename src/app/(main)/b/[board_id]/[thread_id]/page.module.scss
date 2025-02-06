@@ -6,6 +6,23 @@
     overflow: visible;
     word-wrap: break-word;
 }
+
+.thread__nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.thread__nav button{
+    flex-shrink: 0;
+}
+
+.thread__subheader {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .thread__title {
     font-weight: 600;
     overflow: visible;
