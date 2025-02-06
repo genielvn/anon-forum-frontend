@@ -147,7 +147,7 @@ export default function Thread({ params }: ThreadProps) {
 
     return (
         <>
-            <div className={style.thread__nav}>
+            <div className={`margin-bottom-10 ${style.thread__nav}`}>
                 <button
                     onClick={() => router.back()}
                     className="btn-small btn-pink"
