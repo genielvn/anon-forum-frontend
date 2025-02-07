@@ -15,19 +15,23 @@ export default function Account() {
             router.push("/b"); // Redirect to /b if the token exists
         }
     }, [router]);
-    
+
     return (
         <div className={style.account__div}>
             <div className={style.account__first_half}>
                 <Image
                     src={Logo}
-                    alt="not-found-logo"
+                    alt="logo"
                     className={style.notFound__logo}
                     height={200}
                 />
             </div>
 
             <div className={style.account__second_half}>
+                <div className={style.account__introduction}>
+                    <h1>4uni</h1>
+                    <p>Where students gather.</p>
+                </div>
                 <button
                     className="btn-full-width btn-hollow-pink margin-bottom-20"
                     onClick={() => router.push("/a/sign-in")}
