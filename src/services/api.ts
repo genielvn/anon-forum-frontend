@@ -60,9 +60,10 @@ export const deleteAccount = () => api.delete("/s/delete-account/");
 // These are public endpoints
 export const loginUser = async (username: string, password: string) => {
     const response = await api.post("/auth/login/", { username, password });
-    const { token } = response.data;
+    const { token, refresh } = response.data;
 
     Cookies.set("token", token, { expires: 7 });
+    Cookies.set("refresh", refresh, { expires: 7 });
 
     return response;
 };
@@ -78,9 +79,10 @@ export const signUpUser = async (
         email,
         university,
     });
-    const { token } = response.data;
+    const { token, refresh } = response.data;
 
     Cookies.set("token", token, { expires: 7 });
+    Cookies.set("refresh", refresh, { expires: 7 });
 
     return response;
 };
