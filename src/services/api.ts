@@ -61,4 +61,5 @@ export const loginUser = (username: string, password: string) => {
 };
 export const signUpUser = (username: string, password: string, email: string, university: string) => {
     return api.post("/auth/signup/", { username, password, email, university });
-};
+};export const getUniversities = () => api.get("/universities/");
+export const getUniversities = () => api.get("/universities/");

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import style from "./page.module.scss";
-import { signUpUser } from "@/services/api";
+import { getUniversities, signUpUser } from "@/services/api";
 
 export default function AccountSignUp() {
     const [username, setUsername] = useState("");
@@ -22,44 +22,44 @@ export default function AccountSignUp() {
 
         const fetchUniversities = async () => {
             try {
-                const response = await fetch(
-                    "http://127.0.0.1:8000/universities/"
-                );
-                if (response.ok) {
-                    const data = await response.json();
-                    setUniversities(data);
-                } else {
-                    console.error("Failed to fetch universities.");
-                }
+                const response = await getUniversities();
+                setUniversities(response.data);
             } catch (error) {
                 console.error("Error fetching universities:", error);
             }
         };
-
         fetchUniversities();
     }, [router]);
 
     const handleSignUpSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setErrorMessage("");
-    
+
         if (password !== confirmPassword) {
             setErrorMessage("Passwords do not match!");
             return;
         }
-    
+
         try {
-            const response = await signUpUser(username, password, email, university);
+            const response = await signUpUser(
+                username,
+                password,
+                email,
+                university
+            );
             const { token, user, isAdmin, isBanned } = response.data;
-    
+
             localStorage.setItem("token", token);
             localStorage.setItem("user", user);
             localStorage.setItem("isAdmin", isAdmin);
             localStorage.setItem("isBanned", isBanned);
-    
+
             router.push("/b");
         } catch (error: any) {
-            setErrorMessage(error.response?.data?.error || "Something went wrong. Please try again.");
+            setErrorMessage(
+                error.response?.data?.error ||
+                    "Something went wrong. Please try again."
+            );
         }
     };
 
