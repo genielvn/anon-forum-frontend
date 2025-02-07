@@ -2,30 +2,10 @@ import style from "./ThreadReplyTab.module.scss";
 import { useState } from "react";
 import UserThread from "./UserThread";
 import UserReply from "./UserReply";
-
-interface ThreadData {
-    id: number;
-    board: string;
-    title: string;
-    body: string;
-    img_upload: string | null;
-    created_at: string;
-}
-interface ReplyData {
-    thread_title: string;
-    body: string;
-    img_upload: string | null;
-    created_at: string;
-    board: string;
-    thread: number;
-}
-interface UserData {
-    threads: ThreadData[];
-    replies: ReplyData[];
-}
+import { UserBoardThreadData } from "@/types/userboardthread";
 
 interface ThreadReplyTabProps {
-    data: UserData | null;
+    data: UserBoardThreadData | null;
 }
 export default function ThreadReplyTab({ data }: ThreadReplyTabProps) {
     const [activeTab, setActiveTab] = useState<"threads" | "replies">(

@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import style from "./page.module.scss";
+import { loginUser } from "@/services/api";
 
 export default function AccountSignIn() {
     const [username, setUsername] = useState("");
@@ -17,36 +18,20 @@ export default function AccountSignIn() {
     }, [router]);
     const handleSignInSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        setErrorMessage(""); // Clear any previous errors
-
+        setErrorMessage("");
+    
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/login/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username,
-                    password,
-                }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                // Store the JWT token in localStorage or cookies
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", data.user);
-                localStorage.setItem("isAdmin", data.isAdmin);
-                localStorage.setItem("isBanned", data.isBanned);
-
-                // Redirect to the boards list or homepage
-                router.push("/b");
-            } else {
-                const errorData = await response.json();
-                setErrorMessage(errorData.error || "Invalid credentials.");
-            }
-        } catch (error) {
-            setErrorMessage("Something went wrong. Please try again.");
+            const response = await loginUser(username, password);
+            const { token, user, isAdmin, isBanned } = response.data;
+    
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", user);
+            localStorage.setItem("isAdmin", isAdmin);
+            localStorage.setItem("isBanned", isBanned);
+    
+            router.push("/b");
+        } catch (error: any) {
+            setErrorMessage(error.response?.data?.error || "Invalid credentials.");
         }
     };
 

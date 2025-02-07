@@ -2,7 +2,7 @@ import style from "./Board.module.scss";
 import Link from "next/link";
 
 interface BoardProps {
-    id: string; // Define the type for 'id' explicitly
+    id: string; 
     name: string;
     description: string;
 }

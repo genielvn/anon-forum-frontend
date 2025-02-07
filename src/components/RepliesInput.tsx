@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import style from "./RepliesInput.module.scss";
 import Checkbox from "@/components/Checkbox"; // Import your Checkbox component
+import { createReply } from "@/services/api";
 
 interface ReplyInputProps {
     board_id: string;
@@ -40,28 +41,9 @@ const RepliesInput: React.FC<ReplyInputProps> = ({ board_id, thread_id }) => {
         }
 
         try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/b/${board_id}/${thread_id}/reply/`,
-                {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            if (response.ok) {
-                setReply(""); // Clear the reply text area
-                setReplyImage(null); // Clear the image selection
-                if (imageInput.current) imageInput.current.value = ""; // Reset file input
-                setMessage("Reply successfully posted!");
-                window.location.reload();
-            } else {
-                const errorData = await response.json();
-                console.log(errorData);
-                setMessage(errorData?.error || "Failed to post reply.");
-            }
+            const response = await createReply(board_id, thread_id, formData);
+            setMessage("Reply successfully posted!");
+            window.location.reload();
         } catch (err) {
             setMessage(
                 "Something went wrong. Please try again. Error message: " + err

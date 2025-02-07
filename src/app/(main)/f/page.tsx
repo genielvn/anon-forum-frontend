@@ -3,52 +3,50 @@ import { notFound } from "next/navigation";
 import FeedThread from "@/components/FeedThread";
 import useFetch from "@/hooks/useFetch";
 import style from "./page.module.scss";
-
-interface ThreadData {
-    id: number;
-    title: string;
-    author: string;
-    reply_count: number;
-    body: string;
-    updated_at: string;
-    img_upload: string | null;
-    board: string;
-    board_name: string;
-}
+import { ThreadData } from "@/types/thread";
+import { useEffect, useState } from "react";
+import { getFeed } from "@/services/api";
 
 export default function Feed() {
-    const { data, error, isLoading } = useFetch<ThreadData[]>(
-        `http://127.0.0.1:8000/f/`
-    );
+    const [data, setData] = useState<ThreadData[]>([]);
+    const [error, setError] = useState<boolean>(false);
 
-    if (isLoading) {
-        return;
-    }
+    useEffect(() => {
+        const fetchFeed = async () => {
+            try {
+                const response = await getFeed();
+                setData(response.data);
+            } catch (error) {
+                setError(true);
+            }
+        };
+        fetchFeed();
+    }, []);
 
-    if (error) {
-        return notFound();
-    }
+    if (error) return notFound();
 
     return (
-        <>
-            <h1>Latest</h1>
-            <div className={style.thread__list}>
-                {data?.map((thread, index) => (
-                    <FeedThread
-                        key={thread.id}
-                        id={thread.id}
-                        board={thread.board}
-                        board_name={thread.board_name}
-                        title={thread.title}
-                        text={thread.body}
-                        author={thread.author}
-                        replyCount={thread.reply_count}
-                        updated_at={thread.updated_at}
-                        img_upload={thread.img_upload}
-                        index={index}
-                    />
-                ))}
-            </div>
-        </>
+        data && (
+            <>
+                <h1>Latest</h1>
+                <div className={style.thread__list}>
+                    {data?.map((thread, index) => (
+                        <FeedThread
+                            key={thread.id}
+                            id={thread.id}
+                            board={thread.board}
+                            board_name={thread.board_name}
+                            title={thread.title}
+                            text={thread.body}
+                            author={thread.author}
+                            replyCount={thread.reply_count}
+                            updated_at={thread.updated_at}
+                            img_upload={thread.img_upload}
+                            index={index}
+                        />
+                    ))}
+                </div>
+            </>
+        )
     );
 }

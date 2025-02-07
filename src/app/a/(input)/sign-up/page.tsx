@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import style from "./page.module.scss";
+import { signUpUser } from "@/services/api";
 
 export default function AccountSignUp() {
     const [username, setUsername] = useState("");
@@ -38,50 +39,34 @@ export default function AccountSignUp() {
         fetchUniversities();
     }, [router]);
 
-    const handleSignInSubmit = async (event: React.FormEvent) => {
+    const handleSignUpSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setErrorMessage("");
-
+    
         if (password !== confirmPassword) {
             setErrorMessage("Passwords do not match!");
             return;
         }
-
+    
         try {
-            const response = await fetch("http://127.0.0.1:8000/auth/signup/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    username,
-                    password,
-                    email,
-                    university,
-                }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("user", data.user);
-                localStorage.setItem("isAdmin", data.isAdmin);
-                localStorage.setItem("isBanned", data.isBanned);
-                router.push("/b");
-            } else {
-                const errorData = await response.json();
-                console.log(errorData);
-                setErrorMessage(errorData.error || "Invalid credentials.");
-            }
-        } catch (error) {
-            setErrorMessage("Something went wrong. Please try again.");
+            const response = await signUpUser(username, password, email, university);
+            const { token, user, isAdmin, isBanned } = response.data;
+    
+            localStorage.setItem("token", token);
+            localStorage.setItem("user", user);
+            localStorage.setItem("isAdmin", isAdmin);
+            localStorage.setItem("isBanned", isBanned);
+    
+            router.push("/b");
+        } catch (error: any) {
+            setErrorMessage(error.response?.data?.error || "Something went wrong. Please try again.");
         }
     };
 
     return (
         <>
             <h1> Welcome!</h1>
-            <form onSubmit={handleSignInSubmit}>
+            <form onSubmit={handleSignUpSubmit}>
                 <div className={style.account__input_divider}>
                     <label htmlFor="username">Username</label>
                     <input

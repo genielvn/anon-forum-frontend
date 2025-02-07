@@ -4,24 +4,34 @@ import UserBanner from "@/components/UserBanner";
 import useFetch from "@/hooks/useFetch";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import banner from "@/public/default_banner.jpg";
 import icon from "@/public/default_basil.jpg";
 import style from "./page.module.scss";
-
-interface User {
-    username: string;
-    profile_banner: string | null;
-    profile_picture: string | null;
-}
-interface UserData {
-    user: User;
-}
+import { UserBoardThreadData } from "@/types/userboardthread";
+import {
+    deleteAccount,
+    getSelfUserData,
+    uploadProfileBanner,
+    uploadProfilePicture,
+} from "@/services/api";
 
 export default function UserYou() {
-    const { data, error, isLoading } = useFetch<UserData>(
-        `http://127.0.0.1:8000/u/`
-    );
+    const [data, setData] = useState<UserBoardThreadData | null>(null);
+    const [error, setError] = useState(false);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await getSelfUserData();
+                setData(response.data);
+                console.log(response.data);
+            } catch (error) {
+                setError(true);
+            }
+        };
+        fetchUserData();
+    }, []);
 
     const [profilePicture, setProfilePicture] = useState<File | null>(null);
     const [profileBanner, setProfileBanner] = useState<File | null>(null);
@@ -37,33 +47,11 @@ export default function UserYou() {
             return;
         }
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("User is not authenticated.");
-            return;
-        }
-
         const formData = new FormData();
         formData.append("profile_picture", profilePicture);
 
         try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/s/upload-profile-picture/`,
-                {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Profile picture upload failed:", errorData);
-                return;
-            }
-
+            const response = await uploadProfilePicture(formData);
             console.log("Profile picture uploaded successfully.");
             window.location.reload();
         } catch (error) {
@@ -80,33 +68,11 @@ export default function UserYou() {
             return;
         }
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("User is not authenticated.");
-            return;
-        }
-
         const formData = new FormData();
         formData.append("profile_banner", profileBanner);
 
         try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/s/upload-banner/`,
-                {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Profile banner upload failed:", errorData);
-                return;
-            }
-
+            const response = await uploadProfileBanner(formData);
             console.log("Profile banner uploaded successfully.");
             window.location.reload();
         } catch (error) {
@@ -125,29 +91,9 @@ export default function UserYou() {
         if (!confirmation) return;
 
         const token = localStorage.getItem("token");
-        if (!token) {
-            console.error("User is not authenticated.");
-            return;
-        }
 
         try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/s/delete-account/`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Account deletion failed:", errorData);
-                alert("Failed to delete the account. Please try again.");
-                return;
-            }
-
+            const response = await deleteAccount();
             alert("Your account has been deleted successfully.");
             localStorage.removeItem("token");
             window.location.href = "/a";
@@ -160,10 +106,6 @@ export default function UserYou() {
         }
     };
 
-    if (isLoading) {
-        return <p>Loading...</p>;
-    }
-
     if (error) {
         return notFound();
     }
@@ -175,7 +117,10 @@ export default function UserYou() {
                 <h2>Settings</h2>
                 <div className={style.settings__division}>
                     <h3>Decoration</h3>
-                    <p>Change your profile picture and banner by tapping the images.</p>
+                    <p>
+                        Change your profile picture and banner by tapping the
+                        images.
+                    </p>
                     <div className={style.settings__profile_upload}>
                         {/* Profile Picture */}
                         <div className={style.settings__profile_division}>
@@ -192,7 +137,7 @@ export default function UserYou() {
                                 height={120}
                                 objectFit="fill"
                                 className={style.settings__profile_picture}
-                                onClick={() => profileInputRef.current?.click()} // Trigger input on image click
+                                onClick={() => profileInputRef.current?.click()} 
                             />
                             <input
                                 ref={profileInputRef}
@@ -233,7 +178,7 @@ export default function UserYou() {
                                 }
                                 alt="Profile Banner"
                                 className={`${style.settings__profile_picture} ${style.settings__profile_banner}`}
-                                onClick={() => bannerInputRef.current?.click()} // Trigger input on image click
+                                onClick={() => bannerInputRef.current?.click()}
                                 width={500}
                                 height={500}
                             />

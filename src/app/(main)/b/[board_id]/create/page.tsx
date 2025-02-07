@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import style from "./page.module.scss";
-import useFetch from "@/hooks/useFetch";
 import { useRouter, notFound } from "next/navigation";
 import Image from "next/image";
 import Checkbox from "@/components/Checkbox";
+import { BoardData } from "@/types/board";
+import { createThread, getBoard } from "@/services/api";
 
 interface CreateThreadProps {
     params: {
@@ -13,19 +14,23 @@ interface CreateThreadProps {
     };
 }
 
-interface BoardData {
-    board: {
-        board_id: string;
-        name: string;
-        description: string;
-    };
-}
-
 export default function CreateThread({ params }: CreateThreadProps) {
     const { board_id } = params;
-    const { data, error, isLoading } = useFetch<BoardData>(
-        `http://127.0.0.1:8000/b/${board_id}/`
-    );
+    const [data, setData] = useState<BoardData | null>(null);
+    const [error, setError] = useState<boolean>(false);
+
+    useEffect(() => {
+        const fetchBoard = async () => {
+            try {
+                const response = await getBoard(board_id);
+                setData(response.data);
+                console.log(response.data);
+            } catch (error) {
+                setError(true);
+            }
+        };
+        fetchBoard();
+    }, []);
 
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
@@ -33,7 +38,7 @@ export default function CreateThread({ params }: CreateThreadProps) {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
-    const [isAnonymous, setIsAnonymous] = useState(false); // Track checkbox state
+    const [isAnonymous, setIsAnonymous] = useState(false);
     const token = localStorage.getItem("token");
     const router = useRouter();
 
@@ -41,8 +46,7 @@ export default function CreateThread({ params }: CreateThreadProps) {
         return notFound();
     }
 
-    if (isLoading) return <p>Loading...</p>;
-    if (error === "404") return notFound();
+    if (error) return notFound();
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -82,26 +86,9 @@ export default function CreateThread({ params }: CreateThreadProps) {
         formData.append("anonymous", isAnonymous ? "true" : "false");
 
         try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/b/${board_id}/create/`,
-                {
-                    method: "POST",
-                    body: formData,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            if (response.ok) {
-                const json = await response.json();
-                const thread_id = json.id;
-                router.push(`/b/${board_id}/${thread_id}`);
-            } else {
-                const errorData = await response.json();
-                console.log(errorData);
-                throw new Error(errorData?.error);
-            }
+            const response = await createThread(board_id, formData);
+            const thread_id = response.data.id;
+            router.push(`/b/${board_id}/${thread_id}`);
         } catch (err) {
             setMessage(
                 "Something went wrong. Please try again. Error message: " + err
@@ -110,10 +97,10 @@ export default function CreateThread({ params }: CreateThreadProps) {
         }
     };
 
-    return (
+    return (data && (
         <>
-            <Link className="subheader" href={`/b/${data?.board.board_id}`}>
-                /{data?.board.board_id}/ - {data?.board.name}
+            <Link className="subheader" href={`/b/${data?.board_id}`}>
+                /{data?.board_id}/ - {data?.name}
             </Link>
             <h2>Start a New Thread</h2>
             <form onSubmit={handleSubmit}>
@@ -174,5 +161,5 @@ export default function CreateThread({ params }: CreateThreadProps) {
                 </div>
             </form>
         </>
-    );
+    ));
 }

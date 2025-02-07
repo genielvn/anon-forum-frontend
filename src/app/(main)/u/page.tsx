@@ -4,51 +4,36 @@ import ThreadReplyTab from "@/components/ThreadReplyTab";
 import UserBanner from "@/components/UserBanner";
 import useFetch from "@/hooks/useFetch";
 import { notFound } from "next/navigation";
+import { UserBoardThreadData } from "@/types/userboardthread";
+import { useEffect, useState } from "react";
+import { getSelfUserData } from "@/services/api";
 
-interface User {
-    username: string;
-    profile_banner: string | null;
-    profile_picture: string | null;
-    university: string;
-}
-interface ThreadData {
-    id: number;
-    board: string;
-    title: string;
-    body: string;
-    img_upload: string | null;
-    created_at: string;
-}
-interface ReplyData {
-    thread_title: string;
-    body: string;
-    img_upload: string | null;
-    created_at: string;
-    board: string;
-    thread: number;
-}
-interface UserData {
-    user: User;
-    threads: ThreadData[];
-    replies: ReplyData[];
-}
 export default function UserYou() {
-    const { data, error, isLoading } = useFetch<UserData>(
-        `http://127.0.0.1:8000/u/`
-    );
+    const [data, setData] = useState<UserBoardThreadData | null>(null);
+    const [error, setError] = useState(false);
 
-    if (isLoading) {
-        return;
-    }
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await getSelfUserData();
+                setData(response.data);
+            } catch (error) {
+                setError(true);
+            }
+        };
+        fetchUserData();
+    }, []);
 
     if (error) {
         return notFound();
     }
 
     return (
-        <>
-            <UserBanner data={data?.user} />
-            <ThreadReplyTab data={data} />
-        </>
+        data && (
+            <>
+                <UserBanner data={data?.user} />
+                <ThreadReplyTab data={data} />
+            </>
+        )
     );
 }

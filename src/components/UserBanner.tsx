@@ -3,17 +3,10 @@ import Image from "next/image";
 import style from "./UserBanner.module.scss";
 import banner from "@/public/default_banner.jpg";
 import icon from "@/public/default_basil.jpg";
+import { UserData } from "@/types/user";
 
-interface User {
-    username: string;
-    profile_banner: string | null;
-    profile_picture: string | null;
-    university: string;
-    is_banned: string;
-    is_admin: string;
-}
 interface UserBannerProps {
-    data: User | undefined;
+    data: UserData | undefined;
 }
 
 export default function UserBanner({ data }: UserBannerProps) {
