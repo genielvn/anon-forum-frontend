@@ -6,7 +6,7 @@ import { useRouter, notFound } from "next/navigation";
 import Image from "next/image";
 import Checkbox from "@/components/Checkbox";
 import { BoardData } from "@/types/board";
-import { createThread, getBoard } from "@/services/api";
+import { createThread, getBoard, getSelfUserData } from "@/services/api";
 
 interface CreateThreadProps {
     params: {
@@ -20,6 +20,16 @@ export default function CreateThread({ params }: CreateThreadProps) {
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
+        const fetchBanned = async () => {
+            try {
+                const response = await getSelfUserData();
+                if (response.data.user.is_banned) {
+                    setError(true);
+                }
+            } catch (error) {
+                setError(true);
+            }
+        };
         const fetchBoard = async () => {
             try {
                 const response = await getBoard(board_id);
@@ -29,6 +39,8 @@ export default function CreateThread({ params }: CreateThreadProps) {
                 setError(true);
             }
         };
+        
+        fetchBanned();
         fetchBoard();
     }, []);
 
@@ -39,12 +51,7 @@ export default function CreateThread({ params }: CreateThreadProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const [isAnonymous, setIsAnonymous] = useState(false);
-    const token = localStorage.getItem("token");
     const router = useRouter();
-
-    if (!token) {
-        return notFound();
-    }
 
     if (error) return notFound();
 
@@ -97,69 +104,71 @@ export default function CreateThread({ params }: CreateThreadProps) {
         }
     };
 
-    return (data && (
-        <>
-            <Link className="subheader" href={`/b/${data?.board_id}`}>
-                /{data?.board_id}/ - {data?.name}
-            </Link>
-            <h2>Start a New Thread</h2>
-            <form onSubmit={handleSubmit}>
-                <div className={style.new_thread__input_divider}>
-                    <label htmlFor="thread-new-title">Title</label>
-                    <input
-                        type="text"
-                        id="thread-new-title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                </div>
-                <p className="right">{100 - title.length}</p>
-                <div className={style.new_thread__input_divider}>
-                    <label htmlFor="thread-new-text">Content</label>
-                    <textarea
-                        id="thread-new-text"
-                        value={body}
-                        onChange={(e) => setBody(e.target.value)}
-                    />
-                </div>
-                <div className={style.new_thread__input_divider}>
-                    <label htmlFor="thread-new-image">Image</label>
-                    <input
-                        type="file"
-                        id="thread-new-image"
-                        onChange={handleImageChange}
-                        accept="image/*"
-                    />
-                    {imagePreview && (
-                        <div className={style.new_thread__img_preview}>
-                            <Image
-                                src={imagePreview}
-                                alt="Thread Image Preview"
-                                layout="responsive"
-                                width={400}
-                                height={400}
-                            />
-                        </div>
-                    )}
-                </div>
-                {message && <p className="error">{message}</p>}
-                <div className={style.new_thread__input_divider_flexrow}>
-                    <button
-                        type="submit"
-                        className="btn-small btn-pink"
-                        disabled={isSubmitting}
-                        style={{ marginRight: "20px" }}
-                    >
-                        {isSubmitting ? "Submitting..." : "Post"}
-                    </button>
-                    <Checkbox
-                        id="anon"
-                        text="Post as Anonymous"
-                        checked={isAnonymous}
-                        onChange={() => setIsAnonymous(!isAnonymous)}
-                    />
-                </div>
-            </form>
-        </>
-    ));
+    return (
+        data && (
+            <>
+                <Link className="subheader" href={`/b/${data?.board_id}`}>
+                    /{data?.board_id}/ - {data?.name}
+                </Link>
+                <h2>Start a New Thread</h2>
+                <form onSubmit={handleSubmit}>
+                    <div className={style.new_thread__input_divider}>
+                        <label htmlFor="thread-new-title">Title</label>
+                        <input
+                            type="text"
+                            id="thread-new-title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
+                    </div>
+                    <p className="right">{100 - title.length}</p>
+                    <div className={style.new_thread__input_divider}>
+                        <label htmlFor="thread-new-text">Content</label>
+                        <textarea
+                            id="thread-new-text"
+                            value={body}
+                            onChange={(e) => setBody(e.target.value)}
+                        />
+                    </div>
+                    <div className={style.new_thread__input_divider}>
+                        <label htmlFor="thread-new-image">Image</label>
+                        <input
+                            type="file"
+                            id="thread-new-image"
+                            onChange={handleImageChange}
+                            accept="image/*"
+                        />
+                        {imagePreview && (
+                            <div className={style.new_thread__img_preview}>
+                                <Image
+                                    src={imagePreview}
+                                    alt="Thread Image Preview"
+                                    layout="responsive"
+                                    width={400}
+                                    height={400}
+                                />
+                            </div>
+                        )}
+                    </div>
+                    {message && <p className="error">{message}</p>}
+                    <div className={style.new_thread__input_divider_flexrow}>
+                        <button
+                            type="submit"
+                            className="btn-small btn-pink"
+                            disabled={isSubmitting}
+                            style={{ marginRight: "20px" }}
+                        >
+                            {isSubmitting ? "Submitting..." : "Post"}
+                        </button>
+                        <Checkbox
+                            id="anon"
+                            text="Post as Anonymous"
+                            checked={isAnonymous}
+                            onChange={() => setIsAnonymous(!isAnonymous)}
+                        />
+                    </div>
+                </form>
+            </>
+        )
+    );
 }

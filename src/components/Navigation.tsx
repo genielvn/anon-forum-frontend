@@ -3,6 +3,7 @@ import style from "./Navigation.module.scss";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/public/logo.png";
+import Cookies from "js-cookie";
 
 const Navigation = () => {
     const [showMenu, setShowMenu] = useState(false);
@@ -46,7 +47,7 @@ const Navigation = () => {
                         <div
                             className={`${style.dropdown__logout} ${style.dropdown__item}`}
                             onClick={() => {
-                                localStorage.removeItem("token");
+                                Cookies.remove("token");
                                 window.location.href = "/a/";
                             }}
                         >

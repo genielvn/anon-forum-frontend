@@ -4,6 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
+import { deleteReply } from "@/services/api";
 
 interface ReplyProps {
     id: number;
@@ -11,6 +12,8 @@ interface ReplyProps {
     content: string;
     img_upload: string | null;
     created_at: string;
+    is_admin: boolean;
+    current_user: string;
 }
 
 const Reply: React.FC<ReplyProps> = ({
@@ -19,6 +22,8 @@ const Reply: React.FC<ReplyProps> = ({
     content,
     created_at,
     img_upload,
+    is_admin,
+    current_user,
 }) => {
     const relativeTime = formatDistanceToNow(new Date(created_at), {
         addSuffix: true,
@@ -30,38 +35,15 @@ const Reply: React.FC<ReplyProps> = ({
         );
         if (!confirmed) return;
 
-        const token = localStorage.getItem("token"); // Retrieve token from localStorage
-        if (!token) {
-            alert("You must be logged in to delete a reply.");
-            return;
-        }
-
         try {
-            const response = await fetch(
-                `http://127.0.0.1:8000/replies/${id}/delete/`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-
-            if (response.ok) {
-                alert("Reply deleted successfully.");
-                window.location.reload();
-            } else {
-                const errorData = await response.json();
-                alert(errorData.error || "Failed to delete the reply.");
-            }
+            const response = await deleteReply(id);
+            alert("Reply deleted successfully.");
+            window.location.reload();
         } catch (err) {
             console.error(err);
             alert("An error occurred while deleting the reply.");
         }
     };
-
-    const currentUser = localStorage.getItem("user");
-    const isAdmin = localStorage.getItem("isAdmin") === "true";
 
     return (
         <div className={style.reply}>
@@ -79,14 +61,13 @@ const Reply: React.FC<ReplyProps> = ({
                         {author}
                     </Link>
                 )}
-            
-                • {relativeTime} •{" "}
-                {(currentUser === author || isAdmin) && ( // Check if the user is the author or an Admin
+                • {relativeTime}
+                {(current_user === author || is_admin) && ( // Check if the user is the author or an Admin
                     <span
                         className={style.reply__deleteButton}
                         onClick={handleDelete}
                     >
-                        Delete
+                        {" • "}Delete
                     </span>
                 )}
             </div>

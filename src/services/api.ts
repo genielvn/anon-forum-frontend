@@ -7,13 +7,14 @@ import {
 import { ReplyData } from "@/types/reply";
 import { ThreadData } from "@/types/thread";
 import { UserBoardThreadData } from "@/types/userboardthread";
+import Cookies from "js-cookie";
 
 const api = axios.create({
     baseURL: "http://127.0.0.1:8000/",
 });
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -48,6 +49,7 @@ export const editThread = (
 ) => api.put(`/b/${board_id}/${thread_id}/edit/`, data);
 export const deleteThread = (board_id: string, thread_id: number) =>
     api.delete(`/b/${board_id}/${thread_id}/delete/`);
+export const deleteReply = (id: number) => api.delete(`/replies/${id}/delete/`);
 export const banUser = (username: string) => api.post(`/u/${username}/ban/`);
 export const uploadProfilePicture = (data: FormData) =>
     api.post("/s/upload-profile-picture/", data);
@@ -56,10 +58,31 @@ export const uploadProfileBanner = (data: FormData) =>
 export const deleteAccount = () => api.delete("/s/delete-account/");
 
 // These are public endpoints
-export const loginUser = (username: string, password: string) => {
-    return api.post("/auth/login/", { username, password });
+export const loginUser = async (username: string, password: string) => {
+    const response = await api.post("/auth/login/", { username, password });
+    const { token } = response.data;
+
+    Cookies.set("token", token, { expires: 7 });
+
+    return response;
 };
-export const signUpUser = (username: string, password: string, email: string, university: string) => {
-    return api.post("/auth/signup/", { username, password, email, university });
-};export const getUniversities = () => api.get("/universities/");
+export const signUpUser = async (
+    username: string,
+    password: string,
+    email: string,
+    university: string
+) => {
+    const response = await api.post("/auth/signup/", {
+        username,
+        password,
+        email,
+        university,
+    });
+    const { token } = response.data;
+
+    Cookies.set("token", token, { expires: 7 });
+
+    return response;
+};
 export const getUniversities = () => api.get("/universities/");
+export const verifyToken = () => api.get("/auth/verify/");

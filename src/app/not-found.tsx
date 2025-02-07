@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import style from "@styles/notfound.module.scss";
 import Image from "next/image";
 import NotFound from "@/public/404.png";
+import Cookies from "js-cookie";
 
 const quote404 = [
     "Maybe the real page was the friends we made along the way...",
@@ -16,13 +17,9 @@ const quote404 = [
 
 export default function Custom404() {
     const router = useRouter();
-    const token = localStorage.getItem("token"); 
 
-    const goToBoards = () => {
-        router.push("/b");
-    };
-    const joinTheFun = () => {
-        router.push("/a");
+    const goHome = () => {
+        router.push("/");
     };
 
     return (
@@ -40,9 +37,9 @@ export default function Custom404() {
             <div className={style.notFound__button_div}>
                 <button
                     className="btn-full-width btn-solid-pink"
-                    onClick={token ? goToBoards : joinTheFun}
+                    onClick={goHome}
                 >
-                    {token ? "Go to Boards" : "Join the fun!"}
+                    Let's go back...
                 </button>
             </div>
         </div>

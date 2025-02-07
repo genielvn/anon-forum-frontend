@@ -15,6 +15,7 @@ import {
     deleteThread,
     editThread,
     getReplies,
+    getSelfUserData,
     getThread,
 } from "@/services/api";
 
@@ -30,6 +31,9 @@ export default function Thread({ params }: ThreadProps) {
     const [data, setData] = useState<SingleBoardThreadData | null>(null);
     const [replies, setReplies] = useState<ReplyData[] | null>(null);
     const [error, setError] = useState<boolean>(false);
+    const [isBanned, setIsBanned] = useState<boolean>(false);
+    const [isAdmin, setIsAdmin] = useState<boolean>(false);
+    const [currentUser, setCurrentUser] = useState<string>("");
 
     useEffect(() => {
         const fetchThread = async () => {
@@ -48,6 +52,17 @@ export default function Thread({ params }: ThreadProps) {
                 console.error(error);
             }
         };
+        const fetchSelfDetails = async () => {
+            try {
+                const response = await getSelfUserData();
+                setIsBanned(response.data.user.is_banned);
+                setIsAdmin(response.data.user.is_admin);
+                setCurrentUser(response.data.user.username);
+            } catch (error) {
+                setError(true);
+            }
+        };
+        fetchSelfDetails();
         fetchThread();
         fetchReplies();
     }, []);
@@ -87,12 +102,6 @@ export default function Thread({ params }: ThreadProps) {
         }
     };
     const handleDelete = async () => {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            return;
-        }
-
         try {
             const response = await deleteThread(board_id, thread_id);
             alert("Thread deleted successfully!");
@@ -101,10 +110,6 @@ export default function Thread({ params }: ThreadProps) {
             alert("Something went wrong. Please try again.");
         }
     };
-
-    const currentUser = localStorage.getItem("user");
-    const isAdmin = localStorage.getItem("isAdmin") === "true";
-    const isBanned = localStorage.getItem("isBanned") === "true";
 
     return (
         data && (
@@ -239,6 +244,8 @@ export default function Thread({ params }: ThreadProps) {
                               content={reply.body}
                               created_at={reply.created_at}
                               img_upload={reply.img_upload}
+                              is_admin={isAdmin}
+                              current_user={currentUser}
                           />
                       ))}
             </>

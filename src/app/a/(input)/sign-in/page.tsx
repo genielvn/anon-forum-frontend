@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import style from "./page.module.scss";
 import { loginUser } from "@/services/api";
@@ -10,26 +10,13 @@ export default function AccountSignIn() {
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            router.push("/b"); // Redirect to /b if the token exists
-        }
-    }, [router]);
     const handleSignInSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setErrorMessage("");
     
         try {
             const response = await loginUser(username, password);
-            const { token, user, isAdmin, isBanned } = response.data;
-    
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", user);
-            localStorage.setItem("isAdmin", isAdmin);
-            localStorage.setItem("isBanned", isBanned);
-    
-            router.push("/b");
+            router.push("/f");
         } catch (error: any) {
             setErrorMessage(error.response?.data?.error || "Invalid credentials.");
         }

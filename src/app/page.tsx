@@ -1,19 +1,31 @@
-"use client"
+"use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { verifyToken } from "@/services/api";
 
 const HomePage = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
+
         if (!token) {
-            // Redirect to /a if no token
             router.push("/a");
-        } else {
-            // Redirect to /b if token exists
-            router.push("/b");
+            return;
         }
+
+        const verify = async () => {
+            try {
+                const response = await verifyToken();
+                router.push("/b");
+            } catch (error) {
+                console.error("Error verifying token:", error);
+                Cookies.remove("token");
+                router.push("/a");
+            }
+        };
+        verify();
     }, [router]);
 
     return null; // You can return null as the page will handle the redirection

@@ -4,5 +4,5 @@ export interface UserData {
     profile_picture: string | null;
     university: string;
     is_banned: boolean;
-    is_admin: string;
+    is_admin: boolean;
 }

@@ -4,7 +4,7 @@ import ThreadReplyTab from "@/components/ThreadReplyTab";
 import UserBanner from "@/components/UserBanner";
 import { notFound } from "next/navigation";
 import { UserBoardThreadData } from "@/types/userboardthread";
-import { banUser, getUserData } from "@/services/api";
+import { banUser, getSelfUserData, getUserData } from "@/services/api";
 import { useEffect, useState } from "react";
 
 interface UserProps {
@@ -15,6 +15,7 @@ export default function UserOthers({ params }: UserProps) {
     const { username } = params;
 
     const [data, setData] = useState<UserBoardThreadData | null>(null);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [error, setError] = useState(false);
 
     useEffect(() => {
@@ -22,15 +23,21 @@ export default function UserOthers({ params }: UserProps) {
             try {
                 const response = await getUserData(username);
                 setData(response.data);
-                console.log(response.data);
             } catch (error) {
                 setError(true);
             }
         };
+        const fetchAdmin = async () => {
+            try {
+                const response = await getSelfUserData();
+                setIsAdmin(response.data.user.is_admin);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+        fetchAdmin();
         fetchUserData();
     }, []);
-
-    const isAdmin = localStorage.getItem("isAdmin") === "true";
 
     const handleBanUser = async () => {
         try {

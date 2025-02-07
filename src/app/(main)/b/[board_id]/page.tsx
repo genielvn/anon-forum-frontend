@@ -5,8 +5,9 @@ import Thread from "@/components/Thread";
 import ThreadCreate from "@/components/ThreadCreate";
 import style from "./page.module.scss";
 import { BoardThreadListData } from "@/types/boardthread";
-import { getThreads } from "@/services/api";
+import { getSelfUserData, getThreads } from "@/services/api";
 import { useEffect, useState } from "react";
+import { set } from "date-fns";
 
 interface ThreadListProps {
     params: {
@@ -17,6 +18,7 @@ interface ThreadListProps {
 export default function ThreadList({ params }: ThreadListProps) {
     const [data, setData] = useState<BoardThreadListData>();
     const [error, setError] = useState<boolean>(false);
+    const [isBanned, setIsBanned] = useState<boolean>(false);
     const { board_id } = params;
 
     useEffect(() => {
@@ -28,10 +30,17 @@ export default function ThreadList({ params }: ThreadListProps) {
                 setError(true);
             }
         };
+        const fetchBanned = async () => {
+            try {
+                const response = await getSelfUserData();
+                setIsBanned(response.data.user.is_banned);
+            } catch (error) {
+                setError(true);
+            }
+        };
+        fetchBanned();
         fetchThreads();
     }, []);
-
-    const isBanned = localStorage.getItem("isBanned") === "true";
 
     if (error) {
         return notFound();

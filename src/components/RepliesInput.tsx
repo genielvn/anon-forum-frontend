@@ -32,14 +32,6 @@ const RepliesInput: React.FC<ReplyInputProps> = ({ board_id, thread_id }) => {
         if (replyImage) formData.append("img_upload", replyImage);
         formData.append("anonymous", isAnonymous ? "true" : "false"); // Include the anonymous state
 
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            setMessage("You need to be logged in to post a reply.");
-            setIsSubmitting(false);
-            return;
-        }
-
         try {
             const response = await createReply(board_id, thread_id, formData);
             setMessage("Reply successfully posted!");

@@ -15,11 +15,6 @@ export default function AccountSignUp() {
     const router = useRouter();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            router.push("/b"); // Redirect to /b if the token exists
-        }
-
         const fetchUniversities = async () => {
             try {
                 const response = await getUniversities();
@@ -47,14 +42,7 @@ export default function AccountSignUp() {
                 email,
                 university
             );
-            const { token, user, isAdmin, isBanned } = response.data;
-
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", user);
-            localStorage.setItem("isAdmin", isAdmin);
-            localStorage.setItem("isBanned", isBanned);
-
-            router.push("/b");
+            router.push("/f");
         } catch (error: any) {
             setErrorMessage(
                 error.response?.data?.error ||
