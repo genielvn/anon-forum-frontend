@@ -34,8 +34,8 @@ export default function UserBanner({ data }: UserBannerProps) {
                     height={120}
                     width={120}
                     alt="profile-pic"
-                    objectFit="fill"
                     className={style.banner__image}
+                    
                 ></Image>
                 <div className={style.banner__text}>
                     <div className={style.banner__text_user}>
