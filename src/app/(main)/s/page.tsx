@@ -1,7 +1,6 @@
 "use client";
 
 import UserBanner from "@/components/UserBanner";
-import useFetch from "@/hooks/useFetch";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -16,6 +15,7 @@ import {
     uploadProfilePicture,
 } from "@/services/api";
 import Cookies from "js-cookie";
+import { Modal } from "@/components/Modal";
 
 export default function UserYou() {
     const [data, setData] = useState<UserBoardThreadData | null>(null);
@@ -86,9 +86,10 @@ export default function UserYou() {
 
     const handleAccountDeletion = async () => {
         const confirmation = confirm(
-            "Are you sure you want to delete your account? This action is irreversible."
+            "This is a final warning. Are you sure you want to delete your account?"
         );
 
+        setShowModal(false);
         if (!confirmation) return;
 
         try {
@@ -108,6 +109,8 @@ export default function UserYou() {
     if (error) {
         return notFound();
     }
+
+    const [showModal, setShowModal] = useState(false);
 
     return (
         data && (
@@ -220,12 +223,27 @@ export default function UserYou() {
                         <h3>Danger Zone</h3>
                         <button
                             className="btn-small btn-red"
-                            onClick={handleAccountDeletion}
+                            onClick={() => {
+                                setShowModal(true);
+                            }}
                         >
                             Delete Account
                         </button>
                     </div>
                 </div>
+                {showModal && (
+                    <Modal
+                        title="Account Deletion"
+                        content="Are you sure you want to delete your own account? This action is irreversable."
+                        okayAction={handleAccountDeletion}
+                        cancelAction={() => {
+                            setShowModal(false);
+                        }}
+                        okayText="Delete"
+                        cancelText="Cancel"
+                        type="warning"
+                    />
+                )}
             </>
         )
     );

@@ -42,7 +42,6 @@ export default function UserOthers({ params }: UserProps) {
     const handleBanUser = async () => {
         try {
             const response = await banUser(username);
-
             alert("Toggle ban successfully done");
             window.location.reload();
         } catch (error) {

@@ -1,7 +1,6 @@
 "use client";
 import { notFound } from "next/navigation";
 import FeedThread from "@/components/FeedThread";
-import useFetch from "@/hooks/useFetch";
 import style from "./page.module.scss";
 import { ThreadData } from "@/types/thread";
 import { useEffect, useState } from "react";

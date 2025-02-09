@@ -18,6 +18,7 @@ import {
     getSelfUserData,
     getThread,
 } from "@/services/api";
+import { Modal } from "@/components/Modal";
 
 interface ThreadProps {
     params: {
@@ -34,6 +35,7 @@ export default function Thread({ params }: ThreadProps) {
     const [isBanned, setIsBanned] = useState<boolean>(false);
     const [isAdmin, setIsAdmin] = useState<boolean>(false);
     const [currentUser, setCurrentUser] = useState<string>("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchThread = async () => {
@@ -68,7 +70,6 @@ export default function Thread({ params }: ThreadProps) {
     }, []);
 
     const router = useRouter();
-
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [beingEdited, setBeingEdited] = useState(false);
     const [editedBody, setEditedBody] = useState("");
@@ -93,7 +94,7 @@ export default function Thread({ params }: ThreadProps) {
         formData.append("body", editedBody);
 
         try {
-            const response = await editThread(board_id, thread_id, formData);
+            await editThread(board_id, thread_id, formData);
             alert("Thread updated successfully!");
             window.location.reload();
         } catch (error) {
@@ -101,13 +102,19 @@ export default function Thread({ params }: ThreadProps) {
             alert("Something went wrong. Please try again.");
         }
     };
+
+    const confirmDelete = () => {
+        setIsModalOpen(true);
+    };
+
     const handleDelete = async () => {
         try {
-            const response = await deleteThread(board_id, thread_id);
-            alert("Thread deleted successfully!");
+            await deleteThread(board_id, thread_id);
             window.location.href = `/b/${board_id}`;
         } catch (error) {
             alert("Something went wrong. Please try again.");
+        } finally {
+            setIsModalOpen(false);
         }
     };
 
@@ -163,7 +170,7 @@ export default function Thread({ params }: ThreadProps) {
 
                                     <div
                                         className={style.thread__dropdown_item}
-                                        onClick={handleDelete}
+                                        onClick={confirmDelete}
                                     >
                                         Delete
                                     </div>
@@ -248,6 +255,17 @@ export default function Thread({ params }: ThreadProps) {
                               current_user={currentUser}
                           />
                       ))}
+                {isModalOpen && (
+                    <Modal
+                        title="Confirm Deletion"
+                        content="Are you sure you want to delete this thread? This action cannot be undone."
+                        okayAction={handleDelete}
+                        cancelAction={() => setIsModalOpen(false)}
+                        okayText="Delete"
+                        cancelText="Cancel"
+                        type="warning"
+                    />
+                )}
             </>
         )
     );

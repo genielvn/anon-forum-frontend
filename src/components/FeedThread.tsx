@@ -36,10 +36,11 @@ const FeedThread: React.FC<ThreadProps> = ({
 
     const limitedText = text.length > 200 ? `${text.slice(0, 200)}...` : text;
 
+    const styleToUse = index % 2 === 0 ? style.thread : `${style.thread} ${style.thread__alt}`
 
     return (
         <Link href={`/b/${board}/${id}`} style={{ textDecoration: "none" }}>
-            <div className={style.thread}>
+            <div className={styleToUse}>
                 <div className={style.thread__board}>/{board}/ - {board_name}</div>
                 <div className={style.thread__title}>{title}</div>
                 <div className={style.thread__details}>

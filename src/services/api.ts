@@ -11,6 +11,9 @@ import Cookies from "js-cookie";
 
 const api = axios.create({
     baseURL: "http://127.0.0.1:8000/",
+    headers: {
+        "Content-Type": "multipart/form-data",
+    },
 });
 
 api.interceptors.request.use((config) => {
@@ -20,6 +23,36 @@ api.interceptors.request.use((config) => {
     }
     return config;
 });
+
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const refresh = Cookies.get("refresh");
+                if (refresh) {
+                    const { data } = await axios.post(
+                        `http://127.0.0.1:8000/auth/refresh/`,
+                        {
+                            refresh,
+                        }
+                    );
+                    Cookies.set("token", data.access, { expires: 7 });
+                    api.defaults.headers.Authorization = `Bearer ${data.token}`;
+                    return api(originalRequest);
+                }
+            } catch (refreshError) {
+                console.error("Token refresh failed:", refreshError);
+                Cookies.remove("token");
+                Cookies.remove("refresh");
+                return Promise.reject(refreshError);
+            }
+        }
+        return Promise.reject(error);
+    }
+);
 
 // All of these must be aunthenticated to access
 export const getBoards = () => api.get<BoardData[]>("/b/");

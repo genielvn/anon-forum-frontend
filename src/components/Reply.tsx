@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import style from "./Reply.module.scss";
 import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { deleteReply } from "@/services/api";
+import { Modal } from "@/components/Modal";
 
 interface ReplyProps {
     id: number;
@@ -29,19 +30,14 @@ const Reply: React.FC<ReplyProps> = ({
         addSuffix: true,
     });
 
-    const handleDelete = async () => {
-        const confirmed = confirm(
-            "Are you sure you want to delete this reply?"
-        );
-        if (!confirmed) return;
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const handleDelete = async () => {
         try {
-            const response = await deleteReply(id);
-            alert("Reply deleted successfully.");
+            await deleteReply(id);
             window.location.reload();
         } catch (err) {
-            console.error(err);
-            alert("An error occurred while deleting the reply.");
+            alert("An error occurred. Please try again.");
         }
     };
 
@@ -61,11 +57,11 @@ const Reply: React.FC<ReplyProps> = ({
                         {author}
                     </Link>
                 )}
-                • {relativeTime}
-                {(current_user === author || is_admin) && ( // Check if the user is the author or an Admin
+                {" "}• {relativeTime}
+                {(current_user === author || is_admin) && (
                     <span
                         className={style.reply__deleteButton}
-                        onClick={handleDelete}
+                        onClick={() => setIsModalOpen(true)}
                     >
                         {" • "}Delete
                     </span>
@@ -84,6 +80,17 @@ const Reply: React.FC<ReplyProps> = ({
                         width={400}
                     />
                 </div>
+            )}
+            {isModalOpen && (
+                <Modal
+                    title="Delete Reply"
+                    content="Are you sure you want to delete this reply?"
+                    okayAction={handleDelete}
+                    cancelAction={() => setIsModalOpen(false)}
+                    okayText="Delete"
+                    cancelText="Cancel"
+                    type="warning"
+                />
             )}
         </div>
     );

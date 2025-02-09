@@ -2,7 +2,6 @@
 
 import ThreadReplyTab from "@/components/ThreadReplyTab";
 import UserBanner from "@/components/UserBanner";
-import useFetch from "@/hooks/useFetch";
 import { notFound } from "next/navigation";
 import { UserBoardThreadData } from "@/types/userboardthread";
 import { useEffect, useState } from "react";
