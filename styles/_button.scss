@@ -64,13 +64,30 @@ button.btn-blue {
     background-color: $light-blue;
 }
 
+button.btn-gray {
+    outline: 2px $black solid;
+    background-color: $gray;
+}
+
 button.btn-solid-pink {
     outline: 2px $pink solid;
     background-color: $pink;
+}
+
+button.btn-solid-red {
+    outline: 2px $red solid;
+    background-color: $red;
+    color: $white;
 }
 
 button.btn-hollow-pink {
     outline: 2px $pink solid;
     background-color: none;
     color: $pink;
+}
+
+button.btn-hollow-red {
+    outline: 2px $red solid;
+    background-color: none;
+    color: $red;
 }
